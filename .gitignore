@@ -30,3 +30,7 @@ CLAUDE.md
 # OS
 .DS_Store
 .vercel
+
+# Astro/Vercel local env conventions
+.env.local
+.env.*.local

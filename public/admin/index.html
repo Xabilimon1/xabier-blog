@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Content Manager — Xabier</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+  <!-- Decap CMS UI mounts here.
+       Pinned to an exact version + SRI hash so an unpkg/jsdelivr compromise
+       can't ship a malicious CMS with a logged-in OAuth token in scope.
+       To bump: update both VERSION and re-compute the SRI with
+         curl -sL https://cdn.jsdelivr.net/npm/decap-cms@<VER>/dist/decap-cms.js \
+           | openssl dgst -sha384 -binary | openssl base64 -A
+       Then prepend "sha384-" to the result. -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/decap-cms@3.14.0/dist/decap-cms.js"
+    integrity="sha384-xwhgdKXZolX8okdDQCxDlYt05Z2wT8i9VvdZBa4fC/DMwaJJL0Wafb7+oCkftR2p"
+    crossorigin="anonymous"
+  ></script>
+</body>
+</html>

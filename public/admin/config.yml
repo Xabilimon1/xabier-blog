@@ -1,0 +1,135 @@
+# Decap CMS configuration for xabier-blog.
+# Reference: https://decapcms.org/docs/configuration-options/
+#
+# Backend uses our self-hosted Vercel OAuth proxy (see /api/auth + /api/callback).
+# The OAuth callback enforces identity (login + numeric id) so ONLY the repo
+# owner can authenticate, regardless of GitHub collaborators.
+
+backend:
+  name: github
+  repo: Xabilimon1/xabier-blog
+  branch: main
+  base_url: https://xabier-blog.vercel.app
+  auth_endpoint: /api/auth
+  commit_messages:
+    create: "post: {{slug}}"
+    update: "post: update {{slug}}"
+    delete: "post: remove {{slug}}"
+    uploadMedia: "media: upload {{path}}"
+    deleteMedia: "media: remove {{path}}"
+
+media_folder: "public/media"
+public_folder: "/media"
+
+# Hard size cap so a stray hero image can't blow up the Vercel deploy bundle.
+media_library:
+  name: default
+  config:
+    max_file_size: 2097152  # 2 MB
+
+# Site URL used in the preview pane.
+site_url: https://xabier-blog.vercel.app
+display_url: https://xabier-blog.vercel.app
+
+locale: "en"
+publish_mode: simple
+
+collections:
+  - name: posts
+    label: Posts
+    label_singular: Post
+    folder: src/content/posts
+    extension: mdx
+    # yaml-frontmatter guarantees `---` YAML delimiters around the frontmatter.
+    # `frontmatter` (auto-detect) has historically defaulted to TOML in some
+    # Decap CMS versions, which Astro's content collection does not parse.
+    format: yaml-frontmatter
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{publishedAt | date('YYYY-MM-DD')}}"
+    sortable_fields: ["publishedAt", "title", "category"]
+    view_filters:
+      - { label: Drafts, field: draft, pattern: true }
+      - { label: Tech, field: category, pattern: tech }
+      - { label: Research, field: category, pattern: research }
+      - { label: Production, field: category, pattern: production }
+      - { label: Meta, field: category, pattern: meta }
+    fields:
+      - { name: title, label: Title, widget: string }
+      - {
+          name: excerpt,
+          label: Excerpt,
+          widget: text,
+          hint: "One-sentence summary shown on the listing + RSS + OG.",
+        }
+      - {
+          name: publishedAt,
+          label: Published at,
+          widget: datetime,
+          # Store an explicit timestamp so the date doesn't shift across
+          # timezones at render time (UTC-midnight → off-by-one in Madrid).
+          date_format: "YYYY-MM-DD",
+          time_format: false,
+          format: "YYYY-MM-DDTHH:mm:ssZ",
+          picker_utc: false,
+        }
+      - {
+          name: updatedAt,
+          label: Updated at,
+          widget: datetime,
+          required: false,
+          date_format: "YYYY-MM-DD",
+          time_format: false,
+          format: "YYYY-MM-DDTHH:mm:ssZ",
+          picker_utc: false,
+        }
+      - name: category
+        label: Category
+        widget: select
+        options:
+          - { label: "Tech deep-dive", value: tech }
+          - { label: "Research notes", value: research }
+          - { label: "Production lesson", value: production }
+          - { label: "Meta journey", value: meta }
+      - {
+          name: readingMinutes,
+          label: Reading minutes,
+          widget: number,
+          value_type: int,
+          min: 1,
+          max: 120,
+          default: 5,
+        }
+      - name: icon
+        label: Cover icon
+        widget: string
+        default: "ph:notebook-fill"
+        hint: "Phosphor icon name (e.g. ph:flask-fill, ph:shield-check-fill). See phosphoricons.com."
+      - name: color
+        label: Cover color
+        widget: select
+        default: coral
+        options:
+          - { label: Coral, value: coral }
+          - { label: Mint, value: mint }
+          - { label: Yellow, value: yellow }
+          - { label: Purple, value: purple }
+          - { label: Blue, value: blue }
+      - {
+          name: draft,
+          label: Draft,
+          widget: boolean,
+          default: true,
+          hint: "Draft posts are hidden from the public site. Flip to false to publish.",
+        }
+      - {
+          name: body,
+          label: Body,
+          widget: markdown,
+          # Force raw mode — Decap's rich-text editor mangles MDX components and
+          # strips top-level `export const ...` blocks on save. Write the body
+          # as plain Markdown here. If you need MDX components, edit via git.
+          modes: ["raw"],
+          minimal: false,
+          hint: "Markdown only. Do not use MDX components or top-level `export` — those get stripped by the editor.",
+        }
