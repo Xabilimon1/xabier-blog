@@ -1,0 +1,50 @@
+---
+import Sidebar from "../components/Sidebar.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  current: "home" | "about" | "resume" | "blog" | "contact";
+}
+
+const {
+  title,
+  description = "Xabier Ariznabarreta — AI agent builder & researcher-in-training. Madrid.",
+  current,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <div class="card">
+      <Sidebar current={current} />
+      <section class="content">
+        <slot />
+      </section>
+    </div>
+  </main>
+
+  <script is:inline src="https://code.iconify.design/iconify-icon/2.0.0/iconify-icon.min.js"></script>
+  <script is:inline src="/doodles.js"></script>
+  <script is:inline src="/animations.js"></script>
+</body>
+</html>

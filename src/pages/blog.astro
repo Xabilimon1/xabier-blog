@@ -1,178 +1,69 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Blog — Xabier Ariznabarreta</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <main class="shell">
-    <div class="card">
+---
+import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
 
-      <aside class="sidebar">
-        <div class="brand">X<span>.</span></div>
-        <nav class="nav-icons" aria-label="Primary">
-          <a href="/" title="Home">
-            <iconify-icon icon="ph:house" width="22" height="22"></iconify-icon>
-          </a>
-          <a href="/about" title="About">
-            <iconify-icon icon="ph:user-circle" width="22" height="22"></iconify-icon>
-          </a>
-          <a href="/resume" title="Resume">
-            <iconify-icon icon="ph:briefcase" width="22" height="22"></iconify-icon>
-          </a>
-          <a href="/blog" aria-current="page" title="Blog">
-            <iconify-icon icon="ph:notebook" width="22" height="22"></iconify-icon>
-          </a>
-          <a href="/contact" title="Contact">
-            <iconify-icon icon="ph:paper-plane-tilt" width="22" height="22"></iconify-icon>
-          </a>
-        </nav>
-        <div class="copyright">© 2026 — Xabier A.</div>
-      </aside>
+const all = (await getCollection("posts", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 
-      <section class="content">
-        <h2 class="section-heading">Blog</h2>
-        <p style="color:var(--ink-500); margin: -8px 0 28px; font-size: 14.5px; max-width: 640px;">
-          A public research notebook. Four kinds of posts: technical deep-dives, research notes, production lessons, and meta-journey reflections.
-        </p>
+const dateFmt = (d: Date) =>
+  new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(d);
 
-        <div class="chip-row">
-          <button class="chip" data-cat="all" aria-pressed="true">All</button>
-          <button class="chip" data-cat="tech">Tech deep-dive</button>
-          <button class="chip" data-cat="research">Research notes</button>
-          <button class="chip" data-cat="production">Production</button>
-          <button class="chip" data-cat="meta">Meta</button>
-        </div>
+const categoryLabel = (c: string) =>
+  c === "tech" ? "Tech" : c === "research" ? "Research" : c === "production" ? "Production" : "Meta";
+---
 
-        <div class="posts">
+<Layout title="Blog — Xabier Ariznabarreta" current="blog">
 
-          <a href="/post" class="post-card" data-cat="meta">
-            <div class="post-cover" data-c="purple">
-              <iconify-icon icon="ph:compass-fill" width="36" height="36"></iconify-icon>
-            </div>
-            <div>
-              <div class="post-meta">
-                <span class="badge" data-c="purple">Meta</span>
-                <span>04 Jun 2026</span>
-                <span>· 6 min read</span>
-              </div>
-              <h3 class="post-title">Why I&rsquo;m pivoting from production agents to research at 19</h3>
-              <p class="post-excerpt">Eighteen months of shipping changed what I think the bottleneck is. A short note on why I&rsquo;m re-orienting toward alignment work — and what that means in practice.</p>
-            </div>
-            <div class="post-arrow">
-              <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
-            </div>
-          </a>
+  <h2 class="section-heading">Blog</h2>
+  <p style="color:var(--ink-500); margin: -8px 0 28px; font-size: 14.5px; max-width: 640px;">
+    A public research notebook. Four kinds of posts: technical deep-dives, research notes, production lessons, and meta-journey reflections.
+  </p>
 
-          <a href="/post" class="post-card" data-cat="production">
-            <div class="post-cover" data-c="coral">
-              <iconify-icon icon="ph:shield-check-fill" width="36" height="36"></iconify-icon>
-            </div>
-            <div>
-              <div class="post-meta">
-                <span class="badge">Production</span>
-                <span>22 May 2026</span>
-                <span>· 14 min read</span>
-              </div>
-              <h3 class="post-title">I shipped fake crypto to 30 university teachers — a security postmortem</h3>
-              <p class="post-excerpt">A deployed agent generated a plausible-but-fake token contract and signed it as legitimate. What broke, who almost got hurt, and the four review gates I added the next day.</p>
-            </div>
-            <div class="post-arrow">
-              <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
-            </div>
-          </a>
+  <div class="chip-row">
+    <button class="chip" data-cat="all" aria-pressed="true">All</button>
+    <button class="chip" data-cat="tech">Tech deep-dive</button>
+    <button class="chip" data-cat="research">Research notes</button>
+    <button class="chip" data-cat="production">Production</button>
+    <button class="chip" data-cat="meta">Meta</button>
+  </div>
 
-          <a href="/post" class="post-card" data-cat="tech">
-            <div class="post-cover" data-c="yellow">
-              <iconify-icon icon="ph:books-fill" width="36" height="36"></iconify-icon>
-            </div>
-            <div>
-              <div class="post-meta">
-                <span class="badge" data-c="yellow">Tech</span>
-                <span>10 May 2026</span>
-                <span>· 22 min read</span>
-              </div>
-              <h3 class="post-title">Demystifying evals: what I actually learned from Anthropic&rsquo;s paper</h3>
-              <p class="post-excerpt">My working notes after a careful re-read. What an eval IS (and isn&rsquo;t), where benchmark contamination quietly creeps in, and a small reproduction.</p>
-            </div>
-            <div class="post-arrow">
-              <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
-            </div>
-          </a>
-
-          <a href="/post" class="post-card" data-cat="research">
-            <div class="post-cover" data-c="mint">
-              <iconify-icon icon="ph:flask-fill" width="36" height="36"></iconify-icon>
-            </div>
-            <div>
-              <div class="post-meta">
-                <span class="badge" data-c="mint">Research</span>
-                <span>28 Apr 2026</span>
-                <span>· 11 min read</span>
-              </div>
-              <h3 class="post-title">Infrastructure noise as the dominant variable: implications for harness design</h3>
-              <p class="post-excerpt">Pilot results from the harness-ablation study: most of what looks like a capability gap between agent scaffolds is actually noise. Three knobs that swamp the signal.</p>
-            </div>
-            <div class="post-arrow">
-              <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
-            </div>
-          </a>
-
-          <a href="/post" class="post-card" data-cat="tech">
-            <div class="post-cover" data-c="blue">
-              <iconify-icon icon="ph:stack-fill" width="36" height="36"></iconify-icon>
-            </div>
-            <div>
-              <div class="post-meta">
-                <span class="badge" data-c="blue">Tech</span>
-                <span>18 Apr 2026</span>
-                <span>· 28 min read</span>
-              </div>
-              <h3 class="post-title">Building a transformer from primitives: a walkthrough of ARENA ch. 0</h3>
-              <p class="post-excerpt">A line-by-line reimplementation. Self-attention, residual stream, LayerNorm — and the small mistakes I made the first time that taught me more than the answers.</p>
-            </div>
-            <div class="post-arrow">
-              <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
-            </div>
-          </a>
-
-          <a href="/post" class="post-card" data-cat="tech">
-            <div class="post-cover" data-c="purple">
-              <iconify-icon icon="ph:atom-fill" width="36" height="36"></iconify-icon>
-            </div>
-            <div>
-              <div class="post-meta">
-                <span class="badge" data-c="purple">Tech</span>
-                <span>02 Apr 2026</span>
-                <span>· 17 min read</span>
-              </div>
-              <h3 class="post-title">Induction heads explained through ARENA exercises</h3>
-              <p class="post-excerpt">Building intuition for the simplest non-trivial mechanism in a transformer. Diagrams, the in-context-learning bump, and what I still don&rsquo;t understand.</p>
-            </div>
-            <div class="post-arrow">
-              <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
-            </div>
-          </a>
-
-        </div>
-
-        <div class="foot-note">
-          Want to discuss any of these? <a href="/contact">Send me a note.</a>
-        </div>
-      </section>
+  {all.length === 0 ? (
+    <div class="card" style="padding:48px 32px; text-align:center; margin-top:8px;">
+      <iconify-icon icon="ph:notebook" width="48" height="48" style="color:var(--ink-300);"></iconify-icon>
+      <h3 style="margin:16px 0 8px;">No posts yet</h3>
+      <p style="color:var(--ink-500); max-width:420px; margin:0 auto;">
+        The notebook is empty by design. First post lands soon. Until then, you can read the <a href="/about">about page</a> or follow <a href="https://github.com/Xabilimon1" target="_blank" rel="noopener">@Xabilimon1</a> on GitHub.
+      </p>
     </div>
-  </main>
+  ) : (
+    <div class="posts">
+      {all.map((post) => (
+        <a href={`/posts/${post.slug}`} class="post-card" data-cat={post.data.category}>
+          <div class="post-cover" data-c={post.data.color}>
+            <iconify-icon icon={post.data.icon} width="36" height="36"></iconify-icon>
+          </div>
+          <div>
+            <div class="post-meta">
+              <span class="badge" data-c={post.data.color}>{categoryLabel(post.data.category)}</span>
+              <span>{dateFmt(post.data.publishedAt)}</span>
+              <span>· {post.data.readingMinutes} min read</span>
+            </div>
+            <h3 class="post-title">{post.data.title}</h3>
+            <p class="post-excerpt">{post.data.excerpt}</p>
+          </div>
+          <div class="post-arrow">
+            <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
+          </div>
+        </a>
+      ))}
+    </div>
+  )}
 
-  <script is:inline src="https://code.iconify.design/iconify-icon/2.0.0/iconify-icon.min.js"></script>
-  <script src="/doodles.js" is:inline></script>
-  <script src="/animations.js" is:inline></script>
+  <div class="foot-note">
+    Want to discuss anything? <a href="/contact">Send me a note.</a>
+  </div>
+
   <script is:inline>
-    // Chip filter: show only post-cards whose data-cat matches the active chip.
     const chips = document.querySelectorAll('.chip');
     const cards = document.querySelectorAll('.post-card');
 
@@ -191,5 +82,5 @@
       });
     });
   </script>
-</body>
-</html>
+
+</Layout>

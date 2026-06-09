@@ -1,0 +1,66 @@
+---
+import Layout from "./Layout.astro";
+import Comments from "../components/Comments.astro";
+
+interface Props {
+  title: string;
+  excerpt: string;
+  publishedAt: Date;
+  category: "tech" | "research" | "production" | "meta";
+  readingMinutes: number;
+  icon: string;
+  color: "coral" | "mint" | "yellow" | "purple" | "blue";
+}
+
+const { title, excerpt, publishedAt, category, readingMinutes, icon, color } = Astro.props;
+
+const categoryLabel =
+  category === "tech" ? "Tech" :
+  category === "research" ? "Research" :
+  category === "production" ? "Production" : "Meta";
+
+const dateFmt = new Intl.DateTimeFormat("en-GB", {
+  day: "2-digit", month: "short", year: "numeric",
+}).format(publishedAt);
+
+const colorVar =
+  color === "coral" ? "var(--coral)" :
+  color === "mint" ? "var(--mint)" :
+  color === "yellow" ? "var(--yellow)" :
+  color === "purple" ? "var(--purple)" :
+  "var(--blue)";
+---
+
+<Layout title={`${title} — Xabier Ariznabarreta`} description={excerpt} current="blog">
+
+  <a href="/blog" style="display:inline-flex;gap:6px;align-items:center;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-400);margin-bottom:28px;">
+    <iconify-icon icon="ph:arrow-left" width="14" height="14"></iconify-icon>
+    All posts
+  </a>
+
+  <div class="post-hero">
+    <div class="post-meta">
+      <span class="badge" data-c={color}>{categoryLabel}</span>
+      <span>{dateFmt}</span>
+      <span>· {readingMinutes} min read</span>
+    </div>
+
+    <h1>{title}</h1>
+    <p class="lede">{excerpt}</p>
+
+    <div class="post-cover-large" style={`background: ${colorVar};`}>
+      <iconify-icon icon={icon} width="96" height="96"></iconify-icon>
+    </div>
+  </div>
+
+  <article class="prose">
+    <slot />
+  </article>
+
+  <div class="foot-note">
+    Found something wrong? <a href="/contact">Email me</a> and I'll fix it.
+  </div>
+
+  <Comments />
+
+</Layout>

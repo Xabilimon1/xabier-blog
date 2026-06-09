@@ -1,0 +1,26 @@
+---
+const { current } = Astro.props as { current: "home" | "about" | "resume" | "blog" | "contact" };
+const link = (page: string, href: string, icon: string, title: string) => ({
+  href, icon, title,
+  active: current === page,
+});
+const links = [
+  link("home", "/", "ph:house", "Home"),
+  link("about", "/about", "ph:user-circle", "About"),
+  link("resume", "/resume", "ph:briefcase", "Resume"),
+  link("blog", "/blog", "ph:notebook", "Blog"),
+  link("contact", "/contact", "ph:paper-plane-tilt", "Contact"),
+];
+---
+
+<aside class="sidebar">
+  <div class="brand">X<span>.</span></div>
+  <nav class="nav-icons" aria-label="Primary">
+    {links.map((l) => (
+      <a href={l.href} title={l.title} {...(l.active ? { "aria-current": "page" } : {})}>
+        <iconify-icon icon={l.icon} width="22" height="22"></iconify-icon>
+      </a>
+    ))}
+  </nav>
+  <div class="copyright">© 2026 — Xabier A.</div>
+</aside>

@@ -1,0 +1,53 @@
+---
+// Giscus comments — only the repo owner can post (any GitHub user can comment
+// via Giscus, but moderation happens through GitHub Discussions; only members
+// with push access to the repo can create the original Discussion threads via
+// "Announcement" category mapping).
+//
+// Setup: see /SETUP_GISCUS.md at repo root.
+// Until you paste the IDs below, this component renders a friendly placeholder.
+
+const REPO = "Xabilimon1/xabier-blog";
+const REPO_ID = "REPLACE_ME_REPO_ID";        // paste from giscus.app
+const CATEGORY = "Blog comments";
+const CATEGORY_ID = "REPLACE_ME_CATEGORY_ID"; // paste from giscus.app
+
+const configured =
+  REPO_ID !== "REPLACE_ME_REPO_ID" && CATEGORY_ID !== "REPLACE_ME_CATEGORY_ID";
+---
+
+<section class="comments" id="comments">
+  <header class="comments-head">
+    <h2>Discussion</h2>
+    {configured ? (
+      <p>Sign in with GitHub to leave a comment. Comments are stored in GitHub Discussions.</p>
+    ) : (
+      <p>Comments are not wired yet. Follow <a href="https://github.com/Xabilimon1/xabier-blog/blob/main/SETUP_GISCUS.md">SETUP_GISCUS.md</a> to enable.</p>
+    )}
+  </header>
+
+  {configured ? (
+    <script
+      is:inline
+      src="https://giscus.app/client.js"
+      data-repo={REPO}
+      data-repo-id={REPO_ID}
+      data-category={CATEGORY}
+      data-category-id={CATEGORY_ID}
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="light"
+      data-lang="en"
+      data-loading="lazy"
+      crossorigin="anonymous"
+      async
+    ></script>
+  ) : (
+    <div class="comments-placeholder">
+      <p>Once Giscus is wired, this section becomes a live discussion thread powered by GitHub.</p>
+    </div>
+  )}
+</section>
