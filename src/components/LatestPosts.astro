@@ -1,0 +1,65 @@
+---
+// Placeholder posts queue — replace with real posts as they ship
+const posts = [
+  {
+    tag: "Meta",
+    tagColor: "#FF5757",
+    title: "Why I'm pivoting from production agents to research at 19",
+    date: "Coming soon",
+    description: "The honest reasoning, the failed flagships, the decision to optimize for research output.",
+    slug: "/posts/why-pivoting-to-research",
+  },
+  {
+    tag: "Tutorial",
+    tagColor: "#A78BFA",
+    title: "Demystifying evals: what I learned from Anthropic's paper",
+    date: "Coming soon",
+    description: "Notes + open questions after reading the eval methodology post end-to-end.",
+    slug: "/posts/demystifying-evals-notes",
+  },
+  {
+    tag: "Research",
+    tagColor: "#F472B6",
+    title: "Infrastructure noise as the dominant variable",
+    date: "Coming soon",
+    description: "Bridge between Anthropic's infra noise paper and my own harness-ablation work in progress.",
+    slug: "/posts/infrastructure-noise-implications",
+  },
+];
+---
+
+<section id="posts" class="relative px-6 py-24 max-w-6xl mx-auto">
+  <div class="flex items-baseline justify-between mb-12">
+    <h2 class="text-4xl font-bold">Latest Posts</h2>
+    <a href="/posts" class="text-sm text-[var(--color-coral)] font-semibold hover:underline">
+      View all →
+    </a>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-6">
+    {posts.map((post) => (
+      <a href={post.slug} class="card group hover:shadow-soft transition-shadow flex flex-col">
+        <!-- Illustrated placeholder -->
+        <div class="aspect-video rounded-2xl mb-4 flex items-center justify-center" style="background: linear-gradient(135deg, #FFF5F5, #FCE7F3);">
+          <div class="text-5xl opacity-30">{post.tag === "Meta" ? "💭" : post.tag === "Tutorial" ? "📘" : "🔬"}</div>
+        </div>
+
+        <span class="chip self-start mb-3" style={`background-color: ${post.tagColor}20; color: ${post.tagColor};`}>
+          {post.tag}
+        </span>
+
+        <h3 class="text-lg font-bold mb-2 group-hover:text-[var(--color-coral)] transition-colors leading-snug">
+          {post.title}
+        </h3>
+
+        <p class="text-sm text-[var(--color-mute)] mb-4 leading-relaxed flex-1">
+          {post.description}
+        </p>
+
+        <div class="text-xs text-[var(--color-mute)] uppercase tracking-wider">
+          {post.date}
+        </div>
+      </a>
+    ))}
+  </div>
+</section>

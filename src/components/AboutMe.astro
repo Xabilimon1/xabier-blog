@@ -1,0 +1,69 @@
+---
+const skills = [
+  { label: "Production AI engineering", value: 90 },
+  { label: "Research methodology", value: 25 },
+  { label: "Mech interp foundations", value: 10 },
+  { label: "Technical writing", value: 60 },
+];
+
+const stats = [
+  { label: "Production agents shipped", value: 5, suffix: "" },
+  { label: "Papers reading queue", value: 12, suffix: "" },
+  { label: "Posts published", value: 0, suffix: "" },
+  { label: "ARENA chapters", value: 0, suffix: "/4" },
+];
+---
+
+<section id="about" class="relative px-6 py-24 max-w-5xl mx-auto">
+  <h2 class="text-4xl font-bold mb-12 text-center">About Me</h2>
+
+  <div class="grid md:grid-cols-[160px_1fr] gap-8 items-center mb-16">
+    <!-- Avatar -->
+    <div class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-yellow to-pink flex items-center justify-center text-white text-4xl font-display font-bold shadow-soft" style="background: linear-gradient(135deg, #FCD34D, #F472B6);">
+      X
+    </div>
+
+    <!-- Bio card -->
+    <div class="card relative">
+      <p class="text-[var(--color-ink)] mb-6 leading-relaxed">
+        I'm a 19-year-old AI Systems Engineering student at <strong>UFV (Madrid)</strong>. For the last year and a half I've been shipping production agent systems — Salesforce-integrated commercial agents, MCP servers with security review iterations, field-ops trainers on Android. <strong>Now pivoting toward research output</strong> because that's the prerequisite for the work I actually want to do.
+      </p>
+
+      <!-- Skills bars -->
+      <div class="space-y-4">
+        {skills.map((skill) => (
+          <div>
+            <div class="flex justify-between text-sm mb-1">
+              <span class="font-medium">{skill.label}</span>
+              <span class="text-[var(--color-mute)]">{skill.value}%</span>
+            </div>
+            <div class="h-2 bg-[var(--color-line)] rounded-full overflow-hidden">
+              <div
+                class="h-full rounded-full transition-all"
+                style={`width: ${skill.value}%; background: linear-gradient(90deg, #FF5757, #A78BFA);`}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <a href="/Xabier-CV.pdf" class="pill-cta mt-6 text-sm">
+        Download CV
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats counters -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    {stats.map((stat) => (
+      <div class="text-center">
+        <div class="text-4xl font-display font-bold text-[var(--color-ink)]">
+          {stat.value}{stat.suffix}
+        </div>
+        <div class="text-sm text-[var(--color-mute)] mt-1">
+          {stat.label}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
