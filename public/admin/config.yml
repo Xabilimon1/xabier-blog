@@ -39,21 +39,22 @@ collections:
     label: Posts
     label_singular: Post
     folder: src/content/posts
-    extension: mdx
+    # Decap CMS has flaky support for extension: mdx (issues #6677, #7012).
+    # Use .md — Astro's MDX integration parses both .md and .mdx the same way
+    # via the glob loader in src/content.config.ts.
+    extension: md
     # yaml-frontmatter guarantees `---` YAML delimiters around the frontmatter.
-    # `frontmatter` (auto-detect) has historically defaulted to TOML in some
-    # Decap CMS versions, which Astro's content collection does not parse.
     format: yaml-frontmatter
     create: true
     slug: "{{slug}}"
-    summary: "{{title}} — {{publishedAt | date('YYYY-MM-DD')}}"
+    summary: "{{title}}"
     sortable_fields: ["publishedAt", "title", "category"]
     view_filters:
-      - { label: Drafts, field: draft, pattern: true }
-      - { label: Tech, field: category, pattern: tech }
-      - { label: Research, field: category, pattern: research }
-      - { label: Production, field: category, pattern: production }
-      - { label: Meta, field: category, pattern: meta }
+      - { label: Drafts, field: draft, pattern: "true" }
+      - { label: Tech, field: category, pattern: "tech" }
+      - { label: Research, field: category, pattern: "research" }
+      - { label: Production, field: category, pattern: "production" }
+      - { label: Meta, field: category, pattern: "meta" }
     fields:
       - { name: title, label: Title, widget: string }
       - {
