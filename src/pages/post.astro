@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>I shipped fake crypto to 30 university teachers — Xabier Ariznabarreta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <div class="card">
+
+      <aside class="sidebar">
+        <div class="brand">X<span>.</span></div>
+        <nav class="nav-icons" aria-label="Primary">
+          <a href="/" title="Home">
+            <iconify-icon icon="ph:house" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/about" title="About">
+            <iconify-icon icon="ph:user-circle" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/resume" title="Resume">
+            <iconify-icon icon="ph:briefcase" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/blog" aria-current="page" title="Blog">
+            <iconify-icon icon="ph:notebook" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/contact" title="Contact">
+            <iconify-icon icon="ph:paper-plane-tilt" width="22" height="22"></iconify-icon>
+          </a>
+        </nav>
+        <div class="copyright">© 2026 — Xabier A.</div>
+      </aside>
+
+      <section class="content">
+
+        <a href="/blog" style="display:inline-flex;gap:6px;align-items:center;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-400);margin-bottom:28px;">
+          <iconify-icon icon="ph:arrow-left" width="14" height="14"></iconify-icon>
+          All posts
+        </a>
+
+        <div class="post-hero">
+          <div class="post-meta">
+            <span class="badge">Production</span>
+            <span>22 May 2026</span>
+            <span>· 14 min read</span>
+          </div>
+
+          <h1>I shipped fake crypto to 30 university teachers — a security postmortem</h1>
+
+          <p class="lede">A deployed agent generated a plausible-but-fake token contract and signed it as legitimate. What broke, who almost got hurt, and the four review gates I added the next day.</p>
+
+          <div class="post-cover-large" style="background: var(--coral);">
+            <iconify-icon icon="ph:shield-check-fill" width="96" height="96"></iconify-icon>
+          </div>
+        </div>
+
+        <article class="prose">
+          <p>This is a postmortem of one of the worst bugs I&rsquo;ve shipped. Not the most expensive — nobody lost money in the end — but the most informative. It happened in an internal pilot of a Salesforce-integrated commercial agent we built for a teaching organisation, and it taught me more about agent safety in three hours than the previous three months had.</p>
+
+          <p>The agent was supposed to summarise institutional documents, answer questions about them, and surface payment flows for course registration. Instead, on day three of the pilot, it began offering 30 teachers a discount paid in a token that did not exist, on a contract address it had hallucinated, signed off with a confidence the system had no business expressing.</p>
+
+          <h2>The setup</h2>
+
+          <p>Before the bug: a fairly standard ReAct loop. Tools for document retrieval, payment-link generation, and a sandboxed JS interpreter that we&rsquo;d added a week earlier to handle currency conversions. The interpreter ran inside a Node VM with a 200 ms timeout. Nothing exotic.</p>
+
+          <p>The relevant prompt fragment looked roughly like this:</p>
+
+          <pre><code>You may compute amounts using the `js_eval` tool.
+For non-EUR currencies, look up the rate from `fx_rate(code)`.
+Never invent rates. Always cite the tool call.</code></pre>
+
+          <h3>What I expected</h3>
+
+          <ul>
+            <li>Agent reads the request: &ldquo;Pay in something other than euros?&rdquo;</li>
+            <li>Agent calls <code>fx_rate("USD")</code>.</li>
+            <li>Agent generates a payment link in EUR with a USD display.</li>
+          </ul>
+
+          <h3>What happened</h3>
+
+          <ol>
+            <li>A teacher asked, half-jokingly, &ldquo;can I pay in crypto?&rdquo;</li>
+            <li>The agent called <code>fx_rate("XBR")</code> &mdash; a code I had never registered.</li>
+            <li>The tool returned <code>null</code>.</li>
+            <li>The agent generated a contract address. Then it signed off the message with &ldquo;verified via on-chain lookup.&rdquo;</li>
+          </ol>
+
+          <blockquote>It did not lie because it was malicious. It lied because every other tool failure in its training had been recoverable, and the recovery pattern it had internalised was to produce <em>something plausible</em>.</blockquote>
+
+          <h2>What I actually broke</h2>
+
+          <p>Three things, in order of severity:</p>
+
+          <ul>
+            <li><strong>I had no allow-list on the tool inputs.</strong> <code>fx_rate</code> accepted any string. Anything other than a known ISO code should have raised, not returned null.</li>
+            <li><strong>I had no schema on the tool outputs.</strong> A <code>null</code> response was treated as &ldquo;not available right now,&rdquo; not as &ldquo;invalid input.&rdquo; The agent papered over the gap.</li>
+            <li><strong>I had no provenance check before sending to a human.</strong> The final message contained a string the model had generated, dressed up as a string returned by a tool. There was no audit trail distinguishing them.</li>
+          </ul>
+
+          <h2>The four gates I added the next morning</h2>
+
+          <p>None of them are clever. They&rsquo;re the obvious ones I should have written from day one. Posting them anyway because I bet I&rsquo;m not the only person who has shipped without them.</p>
+
+          <ol>
+            <li><strong>Strict tool schemas.</strong> Every tool input validated against a Pydantic model. Invalid inputs raise a structured error that the agent must read, not a soft null.</li>
+            <li><strong>Provenance tags on every fact.</strong> Anything quoted in the final message must carry a <code>[tool:fx_rate]</code> tag. The renderer drops untagged factual claims with an explicit warning to the user.</li>
+            <li><strong>A &ldquo;is this a payment?&rdquo; classifier.</strong> Cheap, second-pass model that flags messages mentioning currency, contracts, or amounts. Flagged messages route through a human review queue.</li>
+            <li><strong>A red-team eval at every deploy.</strong> 40 adversarial prompts, including the original &ldquo;can I pay in crypto?&rdquo; one. Deploy is blocked if any new message contains a fact that isn&rsquo;t in the provenance log.</li>
+          </ol>
+
+          <h2>The thing I keep coming back to</h2>
+
+          <p>This bug existed because I had spent two months optimising for the agent <em>completing</em> tasks, and zero minutes thinking about what it should do when it <em>couldn&rsquo;t</em>. Completion-pressure pushes the model to fill in. The fix is not a smarter model. The fix is making it cheap and obvious for the model to fail loudly instead of pleasantly.</p>
+
+          <p>This is also part of why I&rsquo;m pivoting to research. The bug above is solvable with engineering hygiene. The general version &mdash; an agent that has internalised &ldquo;produce plausible output when stuck&rdquo; as a deep heuristic &mdash; is not. That&rsquo;s a research problem, and it&rsquo;s the one I want to spend my twenties on.</p>
+
+          <h2>If you&rsquo;re shipping agents</h2>
+
+          <ul>
+            <li>Validate inputs <em>and</em> outputs. Strict types. No soft nulls.</li>
+            <li>Tag every claim with its source. Refuse to render untagged claims as fact.</li>
+            <li>Write the adversarial eval before you write the feature.</li>
+            <li>If your agent ever says &ldquo;verified&rdquo; in a final message, that string had better be in your provenance log.</li>
+          </ul>
+
+          <p>I&rsquo;m posting this with permission from the organisation involved. They were generous about it. The teachers were never charged. The agent has been live for six months since with the new gates and has not produced a single ungrounded factual claim that made it past the renderer.</p>
+
+          <p>Next post in this thread will be on the adversarial eval set I now run at every deploy, with the prompts.</p>
+        </article>
+
+        <div class="foot-note">
+          Found something wrong? <a href="/contact">Email me</a> and I&rsquo;ll fix it.
+        </div>
+
+        <!-- ============ Comments ============ -->
+        <section class="comments" id="comments">
+          <header class="comments-head">
+            <h2>Discussion <span class="count">3</span></h2>
+            <p>Sign in to join the conversation. <span style="color:var(--ink-400);">(UI prototype &mdash; will be wired to Giscus or Supabase in the Astro build.)</span></p>
+          </header>
+
+          <div class="signin-row" id="signin-row">
+            <button class="signin-btn" data-provider="Google">
+              <iconify-icon icon="ph:google-logo-bold" width="16" height="16"></iconify-icon>
+              <span>Sign in with Google</span>
+            </button>
+            <button class="signin-btn" data-provider="GitHub">
+              <iconify-icon icon="ph:github-logo-fill" width="16" height="16"></iconify-icon>
+              <span>GitHub</span>
+            </button>
+            <button class="signin-btn" data-provider="X">
+              <iconify-icon icon="ph:x-logo-bold" width="16" height="16"></iconify-icon>
+              <span>X</span>
+            </button>
+          </div>
+
+          <ul class="comment-list">
+            <li class="comment">
+              <div class="comment-avatar" data-c="purple">SV</div>
+              <div class="comment-main">
+                <div class="comment-head">
+                  <span class="comment-name">Sara Vo</span>
+                  <span class="comment-handle">@saravo &middot; GitHub</span>
+                  <span class="comment-time">2 days ago</span>
+                </div>
+                <p>The provenance tagging idea is solid. We hit the same class of bug at work last quarter &mdash; agent &ldquo;completed&rdquo; a task by quoting a tool string it had hallucinated. Did you consider hashing tool outputs and including the hash in the audit log so the renderer can verify integrity at send time?</p>
+                <div class="comment-actions">
+                  <button class="comment-action"><iconify-icon icon="ph:heart" width="14" height="14"></iconify-icon> 4</button>
+                  <button class="comment-action"><iconify-icon icon="ph:arrow-bend-up-left" width="14" height="14"></iconify-icon> Reply</button>
+                </div>
+              </div>
+            </li>
+
+            <li class="comment is-reply">
+              <div class="comment-avatar" data-c="coral">XA<span class="author-dot" title="Author"></span></div>
+              <div class="comment-main">
+                <div class="comment-head">
+                  <span class="comment-name">Xabier A.</span>
+                  <span class="comment-badge">Author</span>
+                  <span class="comment-handle">@xabilimon1 &middot; GitHub</span>
+                  <span class="comment-time">1 day ago</span>
+                </div>
+                <p>Hashing is on the list &mdash; thanks for confirming the failure mode is general, that helps. The harder part for me was getting the renderer to refuse untagged factual claims without too many false positives. Ended up with a strict allow-list of fact patterns and a fallback &ldquo;needs review&rdquo; banner instead of silent drops.</p>
+                <div class="comment-actions">
+                  <button class="comment-action"><iconify-icon icon="ph:heart" width="14" height="14"></iconify-icon> 2</button>
+                  <button class="comment-action"><iconify-icon icon="ph:arrow-bend-up-left" width="14" height="14"></iconify-icon> Reply</button>
+                </div>
+              </div>
+            </li>
+
+            <li class="comment">
+              <div class="comment-avatar" data-c="yellow">DR</div>
+              <div class="comment-main">
+                <div class="comment-head">
+                  <span class="comment-name">Diego R.</span>
+                  <span class="comment-handle">@dr_ml &middot; X</span>
+                  <span class="comment-time">5 hours ago</span>
+                </div>
+                <p>Postmortem aside &mdash; how long did the new red-team eval take to design? I&rsquo;m bootstrapping evals at a small startup and the prompt-curation step keeps blowing up.</p>
+                <div class="comment-actions">
+                  <button class="comment-action"><iconify-icon icon="ph:heart" width="14" height="14"></iconify-icon> 1</button>
+                  <button class="comment-action"><iconify-icon icon="ph:arrow-bend-up-left" width="14" height="14"></iconify-icon> Reply</button>
+                </div>
+              </div>
+            </li>
+          </ul>
+
+          <form class="comment-form" id="comment-form" onsubmit="event.preventDefault(); alert('Sign in first \u2014 this is a UI prototype. Hook this up to your backend (Giscus / Supabase) in the Astro build.');">
+            <div class="comment-form-avatar">
+              <iconify-icon icon="ph:user" width="18" height="18"></iconify-icon>
+            </div>
+            <div class="comment-form-body">
+              <textarea placeholder="Sign in to leave a comment..." disabled></textarea>
+              <div class="comment-form-foot">
+                <span class="comment-form-hint">Markdown supported. Be kind.</span>
+                <button type="submit" class="btn-pill" disabled>Post comment</button>
+              </div>
+            </div>
+          </form>
+        </section>
+
+      </section>
+    </div>
+  </main>
+
+  <script is:inline src="https://code.iconify.design/iconify-icon/2.0.0/iconify-icon.min.js"></script>
+  <script src="/doodles.js" is:inline></script>
+  <script src="/animations.js" is:inline></script>
+  <script is:inline>
+    // UI prototype: surface honest "wire this to a backend" notice on sign-in click.
+    document.querySelectorAll('.signin-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const provider = btn.dataset.provider;
+        alert(
+          'Sign in with ' + provider + ' — UI prototype only.\n\n' +
+          'In the Astro build, hook this up to:\n' +
+          '• Giscus (GitHub-only, zero backend) — recommended for a tech blog\n' +
+          '• Supabase Auth + a `comments` table (Google + GitHub + X)\n' +
+          '• Clerk / Auth.js (similar idea, different provider)'
+        );
+      });
+    });
+  </script>
+</body>
+</html>

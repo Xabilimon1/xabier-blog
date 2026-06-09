@@ -1,18 +1,283 @@
----
-import Layout from "../layouts/Layout.astro";
-import Hero from "../components/Hero.astro";
-import AboutMe from "../components/AboutMe.astro";
-import Now from "../components/Now.astro";
-import Projects from "../components/Projects.astro";
-import LatestPosts from "../components/LatestPosts.astro";
-import Contact from "../components/Contact.astro";
----
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Xabier Ariznabarreta — Builder & researcher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <div class="card">
 
-<Layout title="Xabier Ariznabarreta — research notebook">
-  <Hero />
-  <AboutMe />
-  <Now />
-  <Projects />
-  <LatestPosts />
-  <Contact />
-</Layout>
+      <!-- ===================== Sidebar ===================== -->
+      <aside class="sidebar">
+        <div class="brand">X<span>.</span></div>
+        <nav class="nav-icons" aria-label="Primary">
+          <a href="/" aria-current="page" title="Home">
+            <iconify-icon icon="ph:house" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/about" title="About">
+            <iconify-icon icon="ph:user-circle" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/resume" title="Resume">
+            <iconify-icon icon="ph:briefcase" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/blog" title="Blog">
+            <iconify-icon icon="ph:notebook" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/contact" title="Contact">
+            <iconify-icon icon="ph:paper-plane-tilt" width="22" height="22"></iconify-icon>
+          </a>
+        </nav>
+        <div class="copyright">© 2026 — Xabier A.</div>
+      </aside>
+
+      <!-- ===================== Content ===================== -->
+      <section class="content">
+
+        <!-- ============ Hero ============ -->
+        <div class="hero">
+          <div class="avatar"><span class="initials">X</span></div>
+          <h1>Xabier Ariznabarreta</h1>
+          <p class="role">I&rsquo;m an <span class="accent">AI agent builder &amp; researcher-in-training</span></p>
+
+          <div class="social-row">
+            <a href="https://github.com/Xabilimon1" title="GitHub" target="_blank" rel="noopener">
+              <iconify-icon icon="ph:github-logo-fill" width="20" height="20"></iconify-icon>
+            </a>
+            <a href="mailto:xabier.ariznabarreta@gmail.com" title="Email">
+              <iconify-icon icon="ph:envelope-simple" width="20" height="20"></iconify-icon>
+            </a>
+            <a href="/blog" title="RSS / Blog">
+              <iconify-icon icon="ph:rss-simple" width="20" height="20"></iconify-icon>
+            </a>
+          </div>
+
+          <a href="/blog" class="btn-pill">
+            Read the blog
+            <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
+          </a>
+
+          <div class="scroll-cue">
+            <div>Scroll Down</div>
+            <div class="mouse"></div>
+          </div>
+        </div>
+
+        <!-- ============ About Me ============ -->
+        <section class="section" id="about">
+          <h2 class="section-heading">About Me</h2>
+
+          <div class="about">
+            <div class="about-portrait">
+              <span class="initials">XA</span>
+            </div>
+
+            <div class="about-body">
+              <div class="about-bio">
+                <p>I&rsquo;m <strong>Xabier</strong>, 19, second-year <strong>AI Engineering</strong> student at Universidad Francisco de Vitoria, Madrid. For the last 18 months I&rsquo;ve been shipping agentic systems to production — Salesforce sales agents, MCP servers with security review loops, Android field assistants, multilingual institutional tooling.</p>
+                <p>Now I&rsquo;m pivoting to <strong>research</strong>. Working on my first empirical paper: an ablation study of agent-harness components. This site is the public notebook.</p>
+                <a href="https://github.com/Xabilimon1" target="_blank" rel="noopener" class="btn-pill">
+                  GitHub profile
+                  <iconify-icon icon="ph:arrow-up-right" width="14" height="14"></iconify-icon>
+                </a>
+              </div>
+
+              <div class="about-skills">
+                <div class="skill" data-color="orange">
+                  <div class="skill-head"><span>Production agents</span><span class="pct">85%</span></div>
+                  <div class="skill-track"><div class="skill-bar" style="width:85%"></div></div>
+                </div>
+                <div class="skill" data-color="mint">
+                  <div class="skill-head"><span>LLM research</span><span class="pct">55%</span></div>
+                  <div class="skill-track"><div class="skill-bar" style="width:55%"></div></div>
+                </div>
+                <div class="skill" data-color="red">
+                  <div class="skill-head"><span>Mech interp</span><span class="pct">35%</span></div>
+                  <div class="skill-track"><div class="skill-bar" style="width:35%"></div></div>
+                </div>
+                <div class="skill" data-color="blue">
+                  <div class="skill-head"><span>Eval methodology</span><span class="pct">50%</span></div>
+                  <div class="skill-track"><div class="skill-bar" style="width:50%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-icon">
+                <iconify-icon icon="ph:desktop-tower" width="28" height="28"></iconify-icon>
+              </div>
+              <div>
+                <div class="stat-value">7+</div>
+                <div class="stat-label">Systems shipped</div>
+              </div>
+            </div>
+            <div class="stat">
+              <div class="stat-icon">
+                <iconify-icon icon="ph:coffee" width="28" height="28"></iconify-icon>
+              </div>
+              <div>
+                <div class="stat-value">∞</div>
+                <div class="stat-label">Cups of coffee</div>
+              </div>
+            </div>
+            <div class="stat">
+              <div class="stat-icon">
+                <iconify-icon icon="ph:file-search" width="28" height="28"></iconify-icon>
+              </div>
+              <div>
+                <div class="stat-value">1</div>
+                <div class="stat-label">Paper in progress</div>
+              </div>
+            </div>
+            <div class="stat">
+              <div class="stat-icon">
+                <iconify-icon icon="ph:cake" width="28" height="28"></iconify-icon>
+              </div>
+              <div>
+                <div class="stat-value">19</div>
+                <div class="stat-label">Years old</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ Latest Posts ============ -->
+        <section class="section" id="latest">
+          <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:28px;">
+            <h2 class="section-heading" style="margin-bottom:0;">Latest Posts</h2>
+            <a href="/blog" style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--coral); font-weight:600; display:inline-flex; gap:6px; align-items:center;">
+              All posts
+              <iconify-icon icon="ph:arrow-right" width="12" height="12"></iconify-icon>
+            </a>
+          </div>
+
+          <div class="posts">
+            <a href="/post" class="post-card">
+              <div class="post-cover" data-c="coral">
+                <iconify-icon icon="ph:shield-check-fill" width="36" height="36"></iconify-icon>
+              </div>
+              <div>
+                <div class="post-meta">
+                  <span class="badge">Production</span>
+                  <span>22 May 2026</span>
+                </div>
+                <h3 class="post-title">I shipped fake crypto to 30 university teachers &mdash; a security postmortem</h3>
+                <p class="post-excerpt">A deployed agent generated a plausible-but-fake token contract and signed it as legitimate. What broke and the four review gates I added the next day.</p>
+              </div>
+              <div class="post-arrow">
+                <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
+              </div>
+            </a>
+
+            <a href="/post" class="post-card">
+              <div class="post-cover" data-c="mint">
+                <iconify-icon icon="ph:flask-fill" width="36" height="36"></iconify-icon>
+              </div>
+              <div>
+                <div class="post-meta">
+                  <span class="badge" data-c="mint">Research</span>
+                  <span>28 Apr 2026</span>
+                </div>
+                <h3 class="post-title">Infrastructure noise as the dominant variable: implications for harness design</h3>
+                <p class="post-excerpt">Pilot results from the harness-ablation study: most of what looks like a capability gap is actually noise. Three knobs that swamp the signal.</p>
+              </div>
+              <div class="post-arrow">
+                <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
+              </div>
+            </a>
+
+            <a href="/post" class="post-card">
+              <div class="post-cover" data-c="yellow">
+                <iconify-icon icon="ph:books-fill" width="36" height="36"></iconify-icon>
+              </div>
+              <div>
+                <div class="post-meta">
+                  <span class="badge" data-c="yellow">Tech</span>
+                  <span>10 May 2026</span>
+                </div>
+                <h3 class="post-title">Demystifying evals: what I actually learned from Anthropic&rsquo;s paper</h3>
+                <p class="post-excerpt">My working notes after a careful re-read. What an eval IS (and isn&rsquo;t), where benchmark contamination quietly creeps in, and a small reproduction.</p>
+              </div>
+              <div class="post-arrow">
+                <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
+              </div>
+            </a>
+          </div>
+        </section>
+
+        <!-- ============ Topics ============ -->
+        <section class="section" id="topics">
+          <h2 class="section-heading">Topics</h2>
+          <p style="color:var(--ink-500); margin: -8px 0 28px; font-size: 14.5px; max-width: 560px;">
+            Four kinds of posts. Pick the one that sounds most like you.
+          </p>
+
+          <div class="topics-grid">
+            <a href="/blog" class="value-card" data-c="yellow">
+              <div class="ico">
+                <iconify-icon icon="ph:books-fill" width="22" height="22"></iconify-icon>
+              </div>
+              <h4>Tech deep-dives</h4>
+              <p>Rigorous explanations of LLM internals, transformers from scratch, mech interp, eval methodology. Depth before speed.</p>
+              <div class="topic-meta">3 posts</div>
+            </a>
+
+            <a href="/blog" class="value-card" data-c="purple">
+              <div class="ico">
+                <iconify-icon icon="ph:flask-fill" width="22" height="22"></iconify-icon>
+              </div>
+              <h4>Research notes</h4>
+              <p>Work-in-progress on the harness-ablation paper. Hypotheses, design choices, and null findings included.</p>
+              <div class="topic-meta">1 post</div>
+            </a>
+
+            <a href="/blog" class="value-card" data-c="coral">
+              <div class="ico">
+                <iconify-icon icon="ph:shield-check-fill" width="36" height="36"></iconify-icon>
+              </div>
+              <h4>Production lessons</h4>
+              <p>Honest case studies from systems I&rsquo;ve shipped, including the expensive mistakes &mdash; auth bugs, fake crypto, the works.</p>
+              <div class="topic-meta">1 post</div>
+            </a>
+
+            <a href="/blog" class="value-card" data-c="mint">
+              <div class="ico">
+                <iconify-icon icon="ph:atom-fill" width="36" height="36"></iconify-icon>
+              </div>
+              <h4>Meta journey</h4>
+              <p>Reflections on pivoting from production to research at 19, ARENA progress, and the honest self-critique that comes with it.</p>
+              <div class="topic-meta">1 post</div>
+            </a>
+
+            <a href="/blog" class="value-card span-2" data-c="blue">
+              <div class="ico">
+                <iconify-icon icon="ph:notebook-fill" width="22" height="22"></iconify-icon>
+              </div>
+              <h4>Notebook</h4>
+              <p>Short-form entries that don&rsquo;t earn a full post yet: paper notes, TIL fragments, half-finished thoughts I want timestamped before I forget them.</p>
+              <div class="topic-meta">Continuously updated</div>
+            </a>
+          </div>
+        </section>
+
+        <div class="foot-note">
+          Want the long version? Read <a href="/about">about me</a> or <a href="/contact">get in touch</a>.
+        </div>
+
+      </section>
+    </div>
+  </main>
+
+  <script is:inline src="https://code.iconify.design/iconify-icon/2.0.0/iconify-icon.min.js"></script>
+  <script src="/doodles.js" is:inline></script>
+  <script src="/animations.js" is:inline></script>
+</body>
+</html>

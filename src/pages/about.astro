@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>About — Xabier Ariznabarreta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <div class="card">
+
+      <aside class="sidebar">
+        <div class="brand">X<span>.</span></div>
+        <nav class="nav-icons" aria-label="Primary">
+          <a href="/" title="Home">
+            <iconify-icon icon="ph:house" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/about" aria-current="page" title="About">
+            <iconify-icon icon="ph:user-circle" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/resume" title="Resume">
+            <iconify-icon icon="ph:briefcase" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/blog" title="Blog">
+            <iconify-icon icon="ph:notebook" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/contact" title="Contact">
+            <iconify-icon icon="ph:paper-plane-tilt" width="22" height="22"></iconify-icon>
+          </a>
+        </nav>
+        <div class="copyright">© 2026 — Xabier A.</div>
+      </aside>
+
+      <section class="content">
+
+        <div class="about-page-hero">
+          <div class="portrait-large">
+            <span class="initials">XA</span>
+          </div>
+          <div>
+            <div class="kicker">About</div>
+            <h1>Builder, becoming a researcher.</h1>
+            <p>19 years old, second-year AI Engineering student in Madrid, eighteen months of shipping agents in production, now re-orienting toward alignment and interpretability research. This site is the public version of that transition.</p>
+          </div>
+        </div>
+
+        <section class="section">
+          <h2 class="section-heading">The short version</h2>
+          <article class="prose" style="max-width: 760px; margin-top: 24px;">
+            <p>I&rsquo;m Xabier Ariznabarreta. I grew up in Bilbao and now study <strong>AI Engineering</strong> at Universidad Francisco de Vitoria in Madrid. While finishing high school I started building agentic systems on the side. Year and a half later I&rsquo;ve sent several to production: commercial agents integrated with Salesforce, MCP servers with security-review loops, Android field assistants, multilingual institutional tooling.</p>
+            <p>The work was useful. It was also a teacher. The bugs were instructive, the customers were patient, and the experience showed me where the bottleneck is &mdash; not in the engineering, but in the science underneath.</p>
+            <p>So I&rsquo;m pivoting. I&rsquo;m working on my first empirical paper (an ablation study of agent-harness components), going through <strong>ARENA</strong> in parallel, and using this site as the public notebook for both. Builder in the concrete, learner in the deep.</p>
+
+            <h2>What you&rsquo;ll find here</h2>
+            <p>Four kinds of posts:</p>
+            <ul>
+              <li><strong>Technical deep-dives</strong> &mdash; rigorous explanations of LLM concepts, transformer internals, mech interp, eval methodology. Depth before speed.</li>
+              <li><strong>Research notes</strong> &mdash; work-in-progress on the harness-ablation paper. Hypotheses, design choices, null findings included.</li>
+              <li><strong>Production lessons</strong> &mdash; honest case studies from systems I&rsquo;ve shipped, including the expensive mistakes.</li>
+              <li><strong>Meta journey</strong> &mdash; reflections on the builder-to-researcher pivot at 19, ARENA progress, decisions I&rsquo;m reversing, honest self-critique.</li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="section">
+          <h2 class="section-heading">How I work</h2>
+          <div class="values-grid">
+            <div class="value-card" data-c="purple">
+              <div class="ico">
+                <iconify-icon icon="ph:target-fill" width="22" height="22"></iconify-icon>
+              </div>
+              <h4>Substance over speed</h4>
+              <p>Posts ship when they earn shipping. I&rsquo;d rather publish one careful piece than four shallow ones. No clickbait, no superlatives.</p>
+            </div>
+            <div class="value-card" data-c="yellow">
+              <div class="ico">
+                <iconify-icon icon="ph:warning-circle-fill" width="22" height="22"></iconify-icon>
+              </div>
+              <h4>Honest WIP</h4>
+              <p>Research notes go up while I&rsquo;m still confused. Null findings get the same treatment as positive ones. The errors are part of the artifact.</p>
+            </div>
+            <div class="value-card" data-c="coral">
+              <div class="ico">
+                <iconify-icon icon="ph:translate-fill" width="22" height="22"></iconify-icon>
+              </div>
+              <h4>Bilingual when useful</h4>
+              <p>Mostly English; Spanish for posts where the audience or examples warrant it. Code blocks and math are the same in both.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-heading">Currently</h2>
+          <article class="prose" style="max-width: 760px;">
+            <ul>
+              <li><strong>Reading</strong> &mdash; the recent Anthropic evals paper; Olah et al. on circuits; whatever Lilian Weng posts.</li>
+              <li><strong>Building</strong> &mdash; the experiment harness for the ablation paper. Three of the five conditions are running.</li>
+              <li><strong>Writing</strong> &mdash; the next post is the adversarial eval set from the fake-crypto postmortem, with the prompts.</li>
+              <li><strong>Looking for</strong> &mdash; researchers willing to read a draft, and feedback on the ablation design before I burn more compute.</li>
+            </ul>
+          </article>
+          <a href="/contact" class="btn-pill" style="margin-top: 12px;">
+            Get in touch
+            <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
+          </a>
+        </section>
+
+      </section>
+    </div>
+  </main>
+
+  <script is:inline src="https://code.iconify.design/iconify-icon/2.0.0/iconify-icon.min.js"></script>
+  <script src="/doodles.js" is:inline></script>
+  <script src="/animations.js" is:inline></script>
+</body>
+</html>

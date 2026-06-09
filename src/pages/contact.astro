@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contact — Xabier Ariznabarreta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <div class="card">
+
+      <aside class="sidebar">
+        <div class="brand">X<span>.</span></div>
+        <nav class="nav-icons" aria-label="Primary">
+          <a href="/" title="Home">
+            <iconify-icon icon="ph:house" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/about" title="About">
+            <iconify-icon icon="ph:user-circle" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/resume" title="Resume">
+            <iconify-icon icon="ph:briefcase" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/blog" title="Blog">
+            <iconify-icon icon="ph:notebook" width="22" height="22"></iconify-icon>
+          </a>
+          <a href="/contact" aria-current="page" title="Contact">
+            <iconify-icon icon="ph:paper-plane-tilt" width="22" height="22"></iconify-icon>
+          </a>
+        </nav>
+        <div class="copyright">© 2026 — Xabier A.</div>
+      </aside>
+
+      <section class="content">
+        <h2 class="section-heading">Get In Touch</h2>
+
+        <div class="contact-grid" style="margin-top: 28px;">
+          <div class="contact-intro">
+            <h2>Let&rsquo;s talk.</h2>
+            <p>Best reasons to write: a draft you want feedback on, a question about something I posted, a research collaboration, or a typo on the site. Worst reasons: cold sales pitches and crypto schemes &mdash; I&rsquo;ve already shipped one fake token by accident, I don&rsquo;t need a real one.</p>
+            <p>Don&rsquo;t like forms? Send me an <a href="mailto:xabier.ariznabarreta@gmail.com">email</a> directly.</p>
+
+            <div class="contact-details">
+              <div class="contact-row">
+                <div class="ico">
+                  <iconify-icon icon="ph:envelope-simple" width="20" height="20"></iconify-icon>
+                </div>
+                <div>
+                  <div class="lbl">Email</div>
+                  <div class="val">xabier.ariznabarreta@gmail.com</div>
+                </div>
+              </div>
+              <div class="contact-row">
+                <div class="ico">
+                  <iconify-icon icon="ph:github-logo-fill" width="20" height="20"></iconify-icon>
+                </div>
+                <div>
+                  <div class="lbl">GitHub</div>
+                  <div class="val">@Xabilimon1</div>
+                </div>
+              </div>
+              <div class="contact-row">
+                <div class="ico">
+                  <iconify-icon icon="ph:map-pin" width="16" height="16"></iconify-icon>
+                </div>
+                <div>
+                  <div class="lbl">Based in</div>
+                  <div class="val">Madrid, Spain</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <form class="form-grid" onsubmit="event.preventDefault(); alert('Form is a prototype — wire this up in the Astro build.');">
+            <div class="field">
+              <label for="f-name">Your name</label>
+              <input id="f-name" type="text" placeholder="Jane Doe" required />
+            </div>
+            <div class="field">
+              <label for="f-email">Email address</label>
+              <input id="f-email" type="email" placeholder="jane@example.com" required />
+            </div>
+            <div class="field full">
+              <label for="f-subject">Subject</label>
+              <input id="f-subject" type="text" placeholder="Feedback on the harness-ablation draft" />
+            </div>
+            <div class="field full">
+              <label for="f-message">Message</label>
+              <textarea id="f-message" placeholder="Write your message here…" required></textarea>
+            </div>
+            <div class="field full">
+              <button type="submit" class="btn-pill">
+                Send message
+                <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </section>
+    </div>
+  </main>
+
+  <script is:inline src="https://code.iconify.design/iconify-icon/2.0.0/iconify-icon.min.js"></script>
+  <script src="/doodles.js" is:inline></script>
+  <script src="/animations.js" is:inline></script>
+</body>
+</html>
