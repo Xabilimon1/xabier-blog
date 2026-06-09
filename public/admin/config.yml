@@ -21,11 +21,11 @@ backend:
 media_folder: "public/media"
 public_folder: "/media"
 
-# Hard size cap so a stray hero image can't blow up the Vercel deploy bundle.
-media_library:
-  name: default
-  config:
-    max_file_size: 2097152  # 2 MB
+# Note: Decap's built-in uploader has no `max_file_size` setting — that option
+# is specific to external libraries (Cloudinary / Uploadcare). The Vercel
+# deploy bundle hard-caps at ~250MB, which is the de-facto ceiling here.
+# If image bloat becomes a problem, integrate Cloudinary later via
+# `media_library: { name: cloudinary, config: { cloud_name, api_key } }`.
 
 # Site URL used in the preview pane.
 site_url: https://xabier-blog.vercel.app
