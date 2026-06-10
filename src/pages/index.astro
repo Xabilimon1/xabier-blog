@@ -3,7 +3,7 @@ export const prerender = true;
 import Layout from "../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 
-const all = (await getCollection("posts", ({ data }) => !data.draft))
+const all = (await getCollection("posts", ({ data }) => !data.draft && data.lang === "es"))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
   .slice(0, 3);
 
@@ -142,7 +142,7 @@ const categoryLabel = (c: string) =>
     ) : (
       <div class="posts">
         {all.map((post) => (
-          <a href={`/posts/${post.slug}`} class="post-card">
+          <a href={`/posts/${post.id}`} class="post-card">
             <div class="post-cover" data-c={post.data.color}>
               <iconify-icon icon={post.data.icon} width="36" height="36"></iconify-icon>
             </div>

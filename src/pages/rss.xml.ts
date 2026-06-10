@@ -4,7 +4,7 @@ import { getCollection } from "astro:content";
 import type { APIContext } from "astro";
 
 export async function GET(context: APIContext) {
-  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  const posts = await getCollection("posts", ({ data }) => !data.draft && data.lang === "es");
   return rss({
     title: "Xabier Ariznabarreta — research notebook",
     description:
@@ -16,8 +16,8 @@ export async function GET(context: APIContext) {
         title: post.data.title,
         description: post.data.excerpt,
         pubDate: post.data.publishedAt,
-        link: `/posts/${post.slug}/`,
+        link: `/posts/${post.id}/`,
       })),
-    customData: `<language>en</language>`,
+    customData: `<language>es-ES</language>`,
   });
 }
