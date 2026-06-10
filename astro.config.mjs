@@ -14,7 +14,8 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   integrations: [mdx()],
-  adapter: vercel({
-    webAnalytics: { enabled: true },
-  }),
+  // Web Analytics wired via the `<Analytics />` Astro component from
+  // `@vercel/analytics/astro` in Layout.astro — don't let the adapter
+  // auto-inject the legacy script or we'd double-fire on every page.
+  adapter: vercel(),
 });
