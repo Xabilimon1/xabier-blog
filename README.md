@@ -1,15 +1,24 @@
 # xabier-blog
 
-Source for [xabier-blog.vercel.app](https://xabier-blog.vercel.app) (custom domain: `xabier.dev`, pending).
+Source for [xabier.me](https://xabier.me) (also reachable at `xabier-blog.vercel.app`).
 
-Personal research notebook. Astro + MDX. Designed to be a public artefact of pivoting from production agents to research.
+Personal research notebook. Astro 6 + Tailwind 4. Public artefact of pivoting from production agents to research.
+
+## Stack
+
+- Astro 6 with the glob content loader
+- Tailwind 4 (via `@tailwindcss/vite`)
+- `@astrojs/vercel` adapter, `output: "server"` with every page set to `prerender = true`
+- Giscus comments (GitHub Discussions, category `Announcements`)
+- Vercel Web Analytics + Speed Insights (via `@vercel/analytics/astro` and `@vercel/speed-insights/astro`)
+- Hosted on Vercel, custom domain `xabier.me` registered through Vercel
 
 ## Run locally
 
 ```sh
 npm install
 npm run dev        # localhost:4321
-npm run build      # static output → ./dist
+npm run build      # static output under .vercel/output/
 npm run preview    # serve the build
 ```
 
@@ -18,56 +27,59 @@ npm run preview    # serve the build
 ```
 src/
 ├── components/
-│   ├── Sidebar.astro     ← left vertical nav, used on every page
-│   └── Comments.astro    ← Giscus comments (see SETUP_GISCUS.md)
+│   ├── Sidebar.astro       ← left vertical nav, used on every page
+│   └── Comments.astro      ← Giscus widget
 ├── layouts/
-│   ├── Layout.astro      ← page shell: sidebar + content slot + scripts
-│   └── PostLayout.astro  ← post page: hero + prose + comments
+│   ├── Layout.astro        ← page shell + analytics + speed insights
+│   └── PostLayout.astro    ← post page: hero + prose + ES/EN toggle + comments
 ├── pages/
-│   ├── index.astro       ← home
-│   ├── about.astro       ← long-form about
-│   ├── blog.astro        ← post listing with category chips
-│   ├── contact.astro     ← email + form
-│   ├── resume.astro      ← education + experience + skills
-│   ├── rss.xml.ts        ← RSS feed
+│   ├── index.astro         ← home (filters posts by lang === "es")
+│   ├── about.astro
+│   ├── blog.astro          ← post listing (filters posts by lang === "es")
+│   ├── contact.astro
+│   ├── resume.astro
+│   ├── rss.xml.ts          ← Spanish RSS feed
 │   └── posts/
-│       └── [...slug].astro ← dynamic post route — reads from content collection
+│       └── [...slug].astro ← dynamic post route, uses entry.id (Astro 6 glob loader API)
 ├── content/
-│   └── posts/            ← every post is a .mdx file here (see README inside)
-└── content.config.ts     ← post collection schema (frontmatter validation)
+│   └── posts/              ← every post is a .md file here (see README inside)
+└── content.config.ts       ← post collection schema (frontmatter validation)
 ```
 
 ## Writing a new post
 
-See `src/content/posts/README.md`. Short version:
+See `src/content/posts/README.md` for the frontmatter template. Short version:
 
-1. Create `src/content/posts/<slug>.mdx`
-2. Paste the frontmatter template, edit
-3. Write the body
-4. `git push` → Vercel rebuilds → post is live
+1. Create `src/content/posts/YYYY-MM-DD-<slug>.md` for the Spanish version.
+2. Optionally create `src/content/posts/YYYY-MM-DD-<slug>-en.md` (or any slug) for the English version with `lang: "en"` and `translationOf: "<sibling-slug>"`.
+3. Both posts cross-link via `translationOf` — the toggle renders automatically when a sibling exists.
+4. `git push` to `main` → Vercel rebuilds → live.
 
-Because only the repo owner can push, only the repo owner can publish. That's the canonical personal-blog model (Karpathy, Lilian Weng, Eugene Yan, Simon Willison all work this way).
+Only the repo owner can push to `main`, so only the repo owner can publish. Same pattern as Karpathy, Lilian Weng, Eugene Yan, Simon Willison.
+
+## Language toggle
+
+Posts have a `lang` field (`es` default) and an optional `translationOf` slug pointing at the sibling-language version. When both languages exist, `PostLayout.astro` renders a small ES/EN pill in the post header.
+
+The blog index and RSS feed both filter by `lang === "es"` so translations don't duplicate cards.
 
 ## Comments
 
-Powered by [Giscus](https://giscus.app) → comments are stored in GitHub Discussions on this repo. Until you finish the setup (see `SETUP_GISCUS.md`), the comments section renders a friendly placeholder telling readers to check back later.
+Giscus is wired live. Comments are stored as GitHub Discussions on this repo under the `Announcements` category. To moderate or delete a comment, use the GitHub Discussions UI or `gh api graphql`.
 
-To enable:
+## Analytics
 
-1. Follow `SETUP_GISCUS.md` (10 minutes).
-2. Open `src/components/Comments.astro`.
-3. Paste your `repoId` and `categoryId` over the `REPLACE_ME_*` strings.
-4. Push.
+Vercel Web Analytics and Speed Insights are wired via Astro components in `Layout.astro`. Both load from same-origin `/_vercel/insights/*` and `/_vercel/speed-insights/*` paths, so no CSP changes are needed.
 
-The component flips from placeholder to live widget automatically.
+The dashboards live under the Vercel project → Analytics / Speed Insights tabs. Both features must be enabled at the project level in the Vercel dashboard for data collection to start.
 
 ## Design tokens
 
-The colors, fonts, doodles, and animations live in `public/styles.css`, `public/doodles.js`, and `public/animations.js`. Edit those, hard-refresh.
+Colors, fonts, doodles and animations live in `public/styles.css`, `public/doodles.js` and `public/animations.js`. Edit those, hard-refresh.
 
 ## Deploy
 
-Connected to Vercel. Push to `main` → Vercel builds → public at `xabier-blog.vercel.app`.
+Connected to Vercel. Push to `main` → Vercel builds and aliases the new deployment to `xabier-blog.vercel.app` and `xabier.me` automatically through the Git integration. Manual deploys via `vercel --prod --yes` also work.
 
 ## License
 
