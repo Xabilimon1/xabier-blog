@@ -28,6 +28,8 @@ const posts = defineCollection({
     icon: z.string().default("ph:notebook-fill"),
     color: z.enum(["coral", "mint", "yellow", "purple", "blue"]).default("coral"),
     draft: z.boolean().default(false),
+    lang: z.enum(["es", "en"]).default("es"),
+    translationOf: z.string().optional(),
   }),
 });
 

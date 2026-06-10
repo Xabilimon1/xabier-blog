@@ -10,18 +10,40 @@ interface Props {
   readingMinutes: number;
   icon: string;
   color: "coral" | "mint" | "yellow" | "purple" | "blue";
+  lang?: "es" | "en";
+  translationOf?: string;
 }
 
-const { title, excerpt, publishedAt, category, readingMinutes, icon, color } = Astro.props;
+const {
+  title,
+  excerpt,
+  publishedAt,
+  category,
+  readingMinutes,
+  icon,
+  color,
+  lang = "es",
+  translationOf,
+} = Astro.props;
 
 const categoryLabel =
-  category === "tech" ? "Tech" :
-  category === "research" ? "Research" :
-  category === "production" ? "Production" : "Meta";
+  category === "tech" ? (lang === "es" ? "Tech" : "Tech") :
+  category === "research" ? (lang === "es" ? "Research" : "Research") :
+  category === "production" ? (lang === "es" ? "Producción" : "Production") :
+  (lang === "es" ? "Meta" : "Meta");
 
-const dateFmt = new Intl.DateTimeFormat("en-GB", {
+const dateLocale = lang === "es" ? "es-ES" : "en-GB";
+const dateFmt = new Intl.DateTimeFormat(dateLocale, {
   day: "2-digit", month: "short", year: "numeric",
 }).format(publishedAt);
+
+const readLabel = lang === "es" ? "min de lectura" : "min read";
+const backLabel = lang === "es" ? "Todos los posts" : "All posts";
+const footLabel = lang === "es"
+  ? "¿Encontraste algo mal?"
+  : "Found something wrong?";
+const footCta = lang === "es" ? "Escríbeme" : "Email me";
+const footTail = lang === "es" ? " y lo arreglo." : " and I'll fix it.";
 
 const colorVar =
   color === "coral" ? "var(--coral)" :
@@ -29,28 +51,34 @@ const colorVar =
   color === "yellow" ? "var(--yellow)" :
   color === "purple" ? "var(--purple)" :
   "var(--blue)";
+
+const otherLang = lang === "es" ? "en" : "es";
+const otherLangLabel = otherLang === "es" ? "ES" : "EN";
+const currentLangLabel = lang === "es" ? "ES" : "EN";
 ---
 
 <Layout title={`${title} — Xabier Ariznabarreta`} description={excerpt} current="blog">
 
   <a href="/blog" style="display:inline-flex;gap:6px;align-items:center;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-400);margin-bottom:28px;">
     <iconify-icon icon="ph:arrow-left" width="14" height="14"></iconify-icon>
-    All posts
+    {backLabel}
   </a>
 
   <div class="post-hero">
     <div class="post-meta">
       <span class="badge" data-c={color}>{categoryLabel}</span>
       <span>{dateFmt}</span>
-      <span>· {readingMinutes} min read</span>
+      <span>· {readingMinutes} {readLabel}</span>
+      {translationOf && (
+        <span class="lang-toggle" role="group" aria-label="Language">
+          <span class="lang-current" aria-current="true">{currentLangLabel}</span>
+          <a href={`/posts/${translationOf}`} class="lang-other" aria-label={`Read in ${otherLangLabel}`}>{otherLangLabel}</a>
+        </span>
+      )}
     </div>
 
     <h1>{title}</h1>
     <p class="lede">{excerpt}</p>
-
-    <div class="post-cover-large" style={`background: ${colorVar};`}>
-      <iconify-icon icon={icon} width="96" height="96"></iconify-icon>
-    </div>
   </div>
 
   <article class="prose">
@@ -58,9 +86,40 @@ const colorVar =
   </article>
 
   <div class="foot-note">
-    Found something wrong? <a href="/contact">Email me</a> and I'll fix it.
+    {footLabel} <a href="/contact">{footCta}</a>{footTail}
   </div>
 
   <Comments />
 
 </Layout>
+
+<style>
+  .lang-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    border: 1px solid var(--ink-200);
+    border-radius: 999px;
+    padding: 2px;
+    margin-left: 4px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+  .lang-toggle .lang-current,
+  .lang-toggle .lang-other {
+    padding: 3px 10px;
+    border-radius: 999px;
+    text-decoration: none;
+    line-height: 1;
+  }
+  .lang-toggle .lang-current {
+    background: var(--ink-900);
+    color: var(--paper);
+  }
+  .lang-toggle .lang-other {
+    color: var(--ink-500);
+  }
+  .lang-toggle .lang-other:hover {
+    color: var(--ink-900);
+  }
+</style>

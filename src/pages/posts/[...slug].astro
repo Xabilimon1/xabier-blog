@@ -1,18 +1,18 @@
 ---
 export const prerender = true;
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import PostLayout from "../../layouts/PostLayout.astro";
 
 export async function getStaticPaths() {
   const all = await getCollection("posts", ({ data }) => !data.draft);
   return all.map((entry) => ({
-    params: { slug: entry.slug },
+    params: { slug: entry.id },
     props: { entry },
   }));
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 ---
 
 <PostLayout
@@ -23,6 +23,8 @@ const { Content } = await entry.render();
   readingMinutes={entry.data.readingMinutes}
   icon={entry.data.icon}
   color={entry.data.color}
+  lang={entry.data.lang}
+  translationOf={entry.data.translationOf}
 >
   <Content />
 </PostLayout>
