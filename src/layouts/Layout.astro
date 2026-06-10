@@ -1,6 +1,7 @@
 ---
 import Sidebar from "../components/Sidebar.astro";
 import Analytics from "@vercel/analytics/astro";
+import SpeedInsights from "@vercel/speed-insights/astro";
 
 interface Props {
   title: string;
@@ -50,5 +51,6 @@ const {
   <script is:inline src="/animations.js"></script>
 
   <Analytics />
+  <SpeedInsights />
 </body>
 </html>
