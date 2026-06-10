@@ -4,9 +4,9 @@ import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import vercel from '@astrojs/vercel';
 
-// Switched from `output: 'static'` to `output: 'server'` so the /api/auth +
-// /api/callback endpoints are reliably emitted as serverless functions on
-// Vercel. Every other page exports `prerender = true` to stay static-by-default.
+// Every page exports `prerender = true` to stay static-by-default; `output:
+// 'server'` is kept so the Vercel adapter wires analytics + future endpoints
+// without a config rewrite.
 export default defineConfig({
   site: 'https://xabier-blog.vercel.app',
   output: 'server',
@@ -15,6 +15,6 @@ export default defineConfig({
   },
   integrations: [mdx()],
   adapter: vercel({
-    webAnalytics: { enabled: false },
+    webAnalytics: { enabled: true },
   }),
 });
