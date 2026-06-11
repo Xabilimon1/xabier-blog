@@ -7,6 +7,8 @@ const all = (await getCollection("posts", ({ data }) => !data.draft && data.lang
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
   .slice(0, 3);
 
+const totalPostsCount = (await getCollection("posts", ({ data }) => !data.draft && data.lang === "es")).length;
+
 const dateFmt = (d: Date) =>
   new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(d);
 
@@ -16,10 +18,10 @@ const categoryLabel = (c: string) =>
 
 <Layout title="Xabier Ariznabarreta — Builder & researcher" current="home">
 
-  <div class="hero">
-    <div class="avatar"><span class="initials">X</span></div>
+  <div class="hero hero--text">
+    <div class="hero-kicker">AI Engineering · Research</div>
     <h1>Xabier Ariznabarreta</h1>
-    <p class="role">I'm an <span class="accent">AI agent builder &amp; researcher-in-training</span></p>
+    <p class="role">AI agent <span class="accent">builder</span> &amp; <span class="accent">researcher-in-training</span></p>
 
     <div class="social-row">
       <a href="https://github.com/Xabilimon1" title="GitHub" target="_blank" rel="noopener">
@@ -47,10 +49,37 @@ const categoryLabel = (c: string) =>
   <section class="section" id="about">
     <h2 class="section-heading">About Me</h2>
 
-    <div class="about">
-      <div class="about-portrait">
-        <span class="initials">XA</span>
-      </div>
+    <div class="about about--no-portrait">
+      <aside class="meta-card">
+        <div class="meta-item">
+          <iconify-icon icon="ph:map-pin-fill" width="16" height="16"></iconify-icon>
+          <div>
+            <div class="meta-label">Based in</div>
+            <div class="meta-value">Madrid, Spain</div>
+          </div>
+        </div>
+        <div class="meta-item">
+          <iconify-icon icon="ph:graduation-cap-fill" width="16" height="16"></iconify-icon>
+          <div>
+            <div class="meta-label">Studying</div>
+            <div class="meta-value">AI Engineering · UFV</div>
+          </div>
+        </div>
+        <div class="meta-item">
+          <iconify-icon icon="ph:compass-fill" width="16" height="16"></iconify-icon>
+          <div>
+            <div class="meta-label">Currently</div>
+            <div class="meta-value">Pivoting to research</div>
+          </div>
+        </div>
+        <div class="meta-item">
+          <iconify-icon icon="ph:translate-fill" width="16" height="16"></iconify-icon>
+          <div>
+            <div class="meta-label">Writes in</div>
+            <div class="meta-value">Español · English</div>
+          </div>
+        </div>
+      </aside>
 
       <div class="about-body">
         <div class="about-bio">
@@ -64,20 +93,20 @@ const categoryLabel = (c: string) =>
 
         <div class="about-skills">
           <div class="skill" data-color="orange">
-            <div class="skill-head"><span>Production agents</span><span class="pct">85%</span></div>
-            <div class="skill-track"><div class="skill-bar" style="width:85%"></div></div>
+            <div class="skill-head"><span>Shipping production agents</span><span class="pct">60%</span></div>
+            <div class="skill-track"><div class="skill-bar" style="width:60%"></div></div>
           </div>
-          <div class="skill" data-color="mint">
-            <div class="skill-head"><span>LLM research</span><span class="pct">55%</span></div>
-            <div class="skill-track"><div class="skill-bar" style="width:55%"></div></div>
-          </div>
-          <div class="skill" data-color="red">
-            <div class="skill-head"><span>Mech interp</span><span class="pct">35%</span></div>
-            <div class="skill-track"><div class="skill-bar" style="width:35%"></div></div>
+          <div class="skill" data-color="purple">
+            <div class="skill-head"><span>Python</span><span class="pct">70%</span></div>
+            <div class="skill-track"><div class="skill-bar" style="width:70%"></div></div>
           </div>
           <div class="skill" data-color="blue">
-            <div class="skill-head"><span>Eval methodology</span><span class="pct">50%</span></div>
-            <div class="skill-track"><div class="skill-bar" style="width:50%"></div></div>
+            <div class="skill-head"><span>Eval methodology</span><span class="pct">25%</span></div>
+            <div class="skill-track"><div class="skill-bar" style="width:25%"></div></div>
+          </div>
+          <div class="skill" data-color="mint">
+            <div class="skill-head"><span>LLM research</span><span class="pct">20%</span></div>
+            <div class="skill-track"><div class="skill-bar" style="width:20%"></div></div>
           </div>
         </div>
       </div>
@@ -86,20 +115,20 @@ const categoryLabel = (c: string) =>
     <div class="stats">
       <div class="stat">
         <div class="stat-icon">
-          <iconify-icon icon="ph:desktop-tower" width="28" height="28"></iconify-icon>
+          <iconify-icon icon="ph:cake" width="28" height="28"></iconify-icon>
         </div>
         <div>
-          <div class="stat-value">7+</div>
-          <div class="stat-label">Systems shipped</div>
+          <div class="stat-value">19</div>
+          <div class="stat-label">Years old</div>
         </div>
       </div>
       <div class="stat">
         <div class="stat-icon">
-          <iconify-icon icon="ph:coffee" width="28" height="28"></iconify-icon>
+          <iconify-icon icon="ph:rocket-launch" width="28" height="28"></iconify-icon>
         </div>
         <div>
-          <div class="stat-value">∞</div>
-          <div class="stat-label">Cups of coffee</div>
+          <div class="stat-value">5</div>
+          <div class="stat-label">Months shipping agents</div>
         </div>
       </div>
       <div class="stat">
@@ -113,11 +142,11 @@ const categoryLabel = (c: string) =>
       </div>
       <div class="stat">
         <div class="stat-icon">
-          <iconify-icon icon="ph:cake" width="28" height="28"></iconify-icon>
+          <iconify-icon icon="ph:notebook-fill" width="28" height="28"></iconify-icon>
         </div>
         <div>
-          <div class="stat-value">19</div>
-          <div class="stat-label">Years old</div>
+          <div class="stat-value">{totalPostsCount}</div>
+          <div class="stat-label">Posts published</div>
         </div>
       </div>
     </div>

@@ -339,6 +339,78 @@ iconify-icon {
   gap: 28px;
   align-items: start;
 }
+
+/* ---------- Portrait-less hero + about ---------- */
+.hero--text {
+  padding-top: 12px;
+}
+.hero--text .hero-kicker {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 22px;
+}
+.hero--text h1 {
+  font-size: 38px;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+.hero--text h1::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 3px;
+  background: var(--coral);
+  border-radius: 2px;
+  margin: 14px auto 8px;
+}
+.about--no-portrait {
+  grid-template-columns: 220px 1fr;
+}
+.meta-card {
+  background: var(--ink-50, #f7f7f7);
+  border: 1px solid var(--hairline);
+  border-radius: 18px;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-self: start;
+}
+.meta-card .meta-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.meta-card .meta-item iconify-icon {
+  color: var(--coral);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.meta-card .meta-label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 3px;
+}
+.meta-card .meta-value {
+  font-size: 13.5px;
+  color: var(--ink-900);
+  font-weight: 500;
+  line-height: 1.3;
+}
+@media (max-width: 720px) {
+  .hero--text h1 { font-size: 28px; }
+  .about--no-portrait { grid-template-columns: 1fr; }
+  .meta-card { flex-direction: row; flex-wrap: wrap; gap: 14px 24px; }
+  .meta-card .meta-item { flex: 1 1 calc(50% - 12px); }
+}
 .about-bio p { margin: 0 0 18px; color: var(--ink-500); font-size: 14.5px; }
 .about-bio p strong { color: var(--ink-900); font-weight: 600; }
 .about-skills { display: flex; flex-direction: column; gap: 16px; }
@@ -889,6 +961,35 @@ iconify-icon {
   color: var(--coral); font-weight: 600; margin-bottom: 12px;
 }
 .about-page-hero p { color: var(--ink-500); font-size: 15px; }
+
+/* Portrait-less variant: single-column text hero used by /about and /resume */
+.about-page-hero--text {
+  display: block;
+  max-width: 720px;
+  padding: 8px 0 4px;
+}
+.about-page-hero--text h1 {
+  font-size: 42px;
+  letter-spacing: -0.02em;
+  margin: 0 0 14px;
+  position: relative;
+}
+.about-page-hero--text h1::after {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 3px;
+  background: var(--coral);
+  border-radius: 2px;
+  margin: 16px 0 0;
+}
+.about-page-hero--text p {
+  margin-top: 24px;
+  max-width: 640px;
+}
+@media (max-width: 720px) {
+  .about-page-hero--text h1 { font-size: 30px; }
+}
 
 .values-grid {
   display: grid;
