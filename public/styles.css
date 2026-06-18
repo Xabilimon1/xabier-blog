@@ -647,7 +647,24 @@ iconify-icon {
 .post-card.is-hidden { display: none; }
 
 /* ============================================================
-   Comments
+   Comments — LOCKED 2026-06-18 (do not edit without visual preview)
+   ============================================================
+   This block is the result of a 4-iteration debugging session that finally
+   landed on the "bordered frame" pattern Xabier signed off on.
+   Load-bearing decisions:
+   - .comments max-width 760px (NOT 680px — wider than .prose on purpose)
+   - margin: auto centers the section inside .content
+   - color-scheme: light on both .comments and .comments-frame prevents the
+     Giscus iframe header from rendering dark when the browser leans toward
+     prefers-color-scheme: dark
+   - .comments-frame wraps the Giscus <script> output with a hairline border
+     + 16px radius + white surface, matching the .post-card aesthetic
+   - All comment styling lives here (single source of truth). Do NOT add an
+     inline <style is:global> in PostLayout.astro or anywhere else — the
+     prior overrides fought this block and produced the lateral/compressed
+     bug that took four deploys to resolve.
+   Companion: src/components/Comments.astro carries the .comments-frame
+   wrapper div. Companion memory rule: feedback_blog_comments_layout_locked.
    ============================================================ */
 .comments {
   margin: 72px auto 0;

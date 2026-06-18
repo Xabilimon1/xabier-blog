@@ -6,6 +6,14 @@
 //
 // Setup: see /SETUP_GISCUS.md at repo root.
 // Until you paste the IDs below, this component renders a friendly placeholder.
+//
+// LAYOUT LOCKED 2026-06-18 — DO NOT remove the .comments-frame wrapper around
+// the Giscus <script> without checking the visual. Removing it strips the
+// hairline + radius + white panel and the iframe goes back to looking
+// lateral and compressed (the bug Xabier hit four times before this landed).
+// All visual rules live in public/styles.css under the "Comments — LOCKED"
+// header. Do NOT re-introduce an inline <style is:global> override; that was
+// the source of the localhost↔prod asymmetry.
 
 const REPO = "Xabilimon1/xabier-blog";
 const REPO_ID = "R_kgDOS1o1-g";              // from gh GraphQL repository.id
