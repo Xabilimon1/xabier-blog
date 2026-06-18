@@ -93,24 +93,6 @@ const currentLangLabel = lang === "es" ? "ES" : "EN";
 
 </Layout>
 
-<style is:global>
-  /* Comments section — inline-overridden here so cache of /styles.css can't hold this back.
-     Centers the whole block within .content and forces the giscus iframe to fill 100% of the column. */
-  section.comments#comments {
-    max-width: 680px;
-    margin: 72px auto 0;
-    width: 100%;
-    color-scheme: light;
-  }
-  section.comments#comments .giscus,
-  section.comments#comments .giscus-frame,
-  section.comments#comments iframe {
-    width: 100% !important;
-    min-width: 100% !important;
-    color-scheme: light !important;
-  }
-</style>
-
 <style>
   .lang-toggle {
     display: inline-flex;
