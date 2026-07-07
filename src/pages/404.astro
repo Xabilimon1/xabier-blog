@@ -1,0 +1,25 @@
+---
+export const prerender = true;
+import Layout from "../layouts/Layout.astro";
+
+Astro.response.status = 404;
+Astro.response.statusText = "Not Found";
+---
+
+<Layout
+  title="404 — Xabier Ariznabarreta"
+  description="La página que buscas no existe. Vuelve al inicio o revisa el blog."
+  current="home"
+  lang="es"
+  noindex={true}
+>
+  <div style="text-align:center; padding:80px 20px;">
+    <h1 style="font-size:72px; margin:0 0 12px; color:var(--ink-800);">404</h1>
+    <p style="color:var(--ink-500); font-size:16px; margin-bottom:32px;">
+      La página que buscas no existe.
+    </p>
+    <a href="/" style="display:inline-block; padding:10px 20px; border:1px solid var(--ink-300); border-radius:8px; color:var(--ink-700); text-decoration:none;">
+      Volver al inicio
+    </a>
+  </div>
+</Layout>
