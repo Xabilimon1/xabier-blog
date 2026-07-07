@@ -1,0 +1,68 @@
+name: IndexNow ping
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/content/posts/**'
+      - 'src/pages/**'
+
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: 'Comma-separated URLs to submit (defaults to full sitemap)'
+        required: false
+        default: ''
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Vercel to publish (60s)
+        if: github.event_name == 'push'
+        run: sleep 60
+
+      - name: Discover URLs from sitemap
+        id: urls
+        run: |
+          set -euo pipefail
+          if [ -n "${{ github.event.inputs.urls }}" ]; then
+            echo "urls=${{ github.event.inputs.urls }}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Fetch sitemap and extract loc entries
+          curl -sf https://xabier.me/sitemap-0.xml > sm.xml
+          urls=$(grep -oE '<loc>[^<]+</loc>' sm.xml | sed -E 's|</?loc>||g' | paste -sd ',' -)
+          echo "urls=$urls" >> "$GITHUB_OUTPUT"
+
+      - name: Ping IndexNow
+        env:
+          KEY: 40190ea6d02041d082d30a006aba1225
+          HOST: xabier.me
+          KEY_LOCATION: https://xabier.me/40190ea6d02041d082d30a006aba1225.txt
+        run: |
+          set -euo pipefail
+          URLS_CSV='${{ steps.urls.outputs.urls }}'
+          if [ -z "$URLS_CSV" ]; then
+            echo "no URLs to submit" && exit 0
+          fi
+
+          # Convert CSV to JSON array
+          URLS_JSON=$(python3 -c "import sys,json; print(json.dumps(sys.argv[1].split(',')))" "$URLS_CSV")
+
+          BODY=$(python3 -c "
+import json,sys,os
+print(json.dumps({
+  'host': os.environ['HOST'],
+  'key': os.environ['KEY'],
+  'keyLocation': os.environ['KEY_LOCATION'],
+  'urlList': json.loads(sys.argv[1]),
+}))
+" "$URLS_JSON")
+
+          echo "Submitting $(echo "$URLS_JSON" | python3 -c 'import json,sys; print(len(json.load(sys.stdin)))') URLs to IndexNow..."
+          curl -sSf -X POST 'https://api.indexnow.org/indexnow' \
+            -H 'Content-Type: application/json; charset=utf-8' \
+            --data "$BODY" \
+            -w '\nHTTP %{http_code}\n'
