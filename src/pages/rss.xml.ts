@@ -9,6 +9,7 @@ export async function GET(context: APIContext) {
     title: "Xabier Ariznabarreta — research notebook",
     description:
       "Builder pivoting to researcher. Notes on LLM evals, mech interp, agent harnesses, and the production lessons that pushed me here.",
+    trailingSlash: false,
     site: context.site ?? "https://xabier.me",
     items: posts
       .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
