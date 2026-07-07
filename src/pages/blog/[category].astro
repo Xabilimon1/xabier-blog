@@ -1,0 +1,102 @@
+---
+export const prerender = true;
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  return [
+    { params: { category: "tech" } },
+    { params: { category: "research" } },
+    { params: { category: "production" } },
+    { params: { category: "meta" } },
+  ];
+}
+
+const { category } = Astro.params;
+
+const categoryMeta = {
+  tech: {
+    title: "Tech deep-dives",
+    description: "Rigorous explanations of LLM internals, transformers from scratch, mech interp, eval methodology. Depth before speed.",
+    intro: "Deep-dives técnicos: cómo funcionan por dentro los modelos que uso todos los días. Priorizo la profundidad y la reproducibilidad sobre la velocidad. Si algo requiere leer el paper original y hacer las cuentas a mano, se hace.",
+  },
+  research: {
+    title: "Research notes",
+    description: "Work-in-progress research: hypotheses, design choices, ablations, null findings. Public notebook for the harness-ablation paper.",
+    intro: "Notas de research en curso — el paper de ablation del harness, ideas que estoy explorando, decisiones de diseño. Publico también los null findings porque forman parte del artefacto tanto como los positivos.",
+  },
+  production: {
+    title: "Production lessons",
+    description: "Honest post-mortems and case studies from LLM agents I've shipped: auth bugs, prompt injection, cost blowouts, and the fixes.",
+    intro: "Lecciones honestas de sistemas que he shippado — bugs de autenticación, prompt injection, blow-ups de coste, las decisiones de arquitectura que salieron mal. Los mistakes van con el mismo peso que los aciertos.",
+  },
+  meta: {
+    title: "Meta journey",
+    description: "Reflections on the pivot from production engineering to AI safety research at 19. ARENA progress, self-critique, decisions I'm reversing.",
+    intro: "Reflexiones sobre el pivote de production engineering a AI safety research a los 19. Progreso en ARENA, decisiones que estoy revirtiendo, autocrítica pública. Sin filtros de bio de Twitter.",
+  },
+} as const;
+
+type Cat = keyof typeof categoryMeta;
+const meta = categoryMeta[category as Cat];
+
+const posts = (await getCollection("posts", ({ data }) => !data.draft && data.category === category && data.lang === "es"))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+
+const dateFmt = (d: Date) =>
+  new Intl.DateTimeFormat("es-ES", { day: "2-digit", month: "short", year: "numeric" }).format(d);
+---
+
+<Layout
+  title={`${meta.title} — Xabier Ariznabarreta`}
+  description={meta.description}
+  current="blog"
+  lang="es"
+>
+
+  <a href="/blog" style="display:inline-flex;gap:6px;align-items:center;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-400);margin-bottom:20px;">
+    <iconify-icon icon="ph:arrow-left" width="14" height="14"></iconify-icon>
+    Todos los posts
+  </a>
+
+  <h1 class="section-heading" style="margin-bottom:12px;">{meta.title}</h1>
+  <p style="color:var(--ink-500); margin: -8px 0 32px; font-size: 15px; max-width: 680px; line-height: 1.6;">
+    {meta.intro}
+  </p>
+
+  {posts.length === 0 ? (
+    <div class="card" style="padding:36px 28px; text-align:center;">
+      <iconify-icon icon="ph:notebook" width="36" height="36" style="color:var(--ink-300);"></iconify-icon>
+      <p style="color:var(--ink-500); margin:12px 0 0;">
+        Todavía no hay posts en esta categoría. <a href="/rss.xml">Suscríbete al RSS</a> para saberlo cuando lleguen.
+      </p>
+    </div>
+  ) : (
+    <div class="posts">
+      {posts.map((post) => (
+        <a href={`/posts/${post.id}`} class="post-card">
+          <div class="post-cover" data-c={post.data.color}>
+            <iconify-icon icon={post.data.icon} width="36" height="36"></iconify-icon>
+          </div>
+          <div>
+            <div class="post-meta">
+              <span class="badge" data-c={post.data.color}>{meta.title.split(" ")[0]}</span>
+              <span>{dateFmt(post.data.publishedAt)}</span>
+              <span>· {post.data.readingMinutes} min de lectura</span>
+            </div>
+            <h3 class="post-title">{post.data.title}</h3>
+            <p class="post-excerpt">{post.data.excerpt}</p>
+          </div>
+          <div class="post-arrow">
+            <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
+          </div>
+        </a>
+      ))}
+    </div>
+  )}
+
+  <div class="foot-note">
+    Explora otras categorías: <a href="/blog/tech">Tech</a> · <a href="/blog/research">Research</a> · <a href="/blog/production">Production</a> · <a href="/blog/meta">Meta</a>
+  </div>
+
+</Layout>

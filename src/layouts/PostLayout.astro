@@ -1,6 +1,7 @@
 ---
 import Layout from "./Layout.astro";
 import Comments from "../components/Comments.astro";
+import { getCollection } from "astro:content";
 import { SITE, SITE_NAME, AUTHOR } from "../lib/site";
 
 interface Props {
@@ -63,6 +64,23 @@ const byLabel = lang === "es" ? "Por" : "By";
 const otherLang = lang === "es" ? "en" : "es";
 const otherLangLabel = otherLang === "es" ? "ES" : "EN";
 const currentLangLabel = lang === "es" ? "ES" : "EN";
+
+// Related posts — same category + lang, exclude self, limit 3, sorted by publishedAt desc
+const relatedPool = await getCollection(
+  "posts",
+  ({ data, id }) =>
+    !data.draft &&
+    data.category === category &&
+    data.lang === lang &&
+    id !== Astro.props.slug,
+);
+const relatedPosts = relatedPool
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+  .slice(0, 3);
+const relatedFmt = new Intl.DateTimeFormat(dateLocale, {
+  day: "2-digit", month: "short", year: "numeric",
+});
+const relatedHeading = lang === "es" ? "También en " + categoryLabel : "More " + categoryLabel;
 
 // Post URLs — self + counterpart via translationOf
 const selfPath = `/posts/${slug}`;
@@ -190,6 +208,24 @@ const breadcrumb = {
     {footLabel} <a href="/contact">{footCta}</a>{footTail}
   </div>
 
+  {relatedPosts.length > 0 && (
+    <section class="related">
+      <h2 class="related-heading">{relatedHeading}</h2>
+      <div class="related-list">
+        {relatedPosts.map((post) => (
+          <a href={`/posts/${post.id}`} class="related-item">
+            <div class="related-meta">
+              <span class="badge" data-c={post.data.color}>{categoryLabel}</span>
+              <time datetime={post.data.publishedAt.toISOString()}>{relatedFmt.format(post.data.publishedAt)}</time>
+            </div>
+            <h3 class="related-title">{post.data.title}</h3>
+            <p class="related-excerpt">{post.data.excerpt}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
   <Comments />
 
 </Layout>
@@ -238,5 +274,54 @@ const breadcrumb = {
   }
   .byline .updated {
     color: var(--ink-400);
+  }
+  .related {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--ink-200, #e6e5ef);
+  }
+  .related-heading {
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+    margin: 0 0 20px;
+  }
+  .related-list {
+    display: grid;
+    gap: 16px;
+  }
+  .related-item {
+    display: block;
+    padding: 20px;
+    border: 1px solid var(--ink-200, #e6e5ef);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .15s, transform .15s;
+  }
+  .related-item:hover {
+    border-color: var(--ink-400);
+    transform: translateY(-1px);
+  }
+  .related-meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 12px;
+    color: var(--ink-400);
+    margin-bottom: 6px;
+  }
+  .related-title {
+    font-size: 17px;
+    margin: 0 0 6px;
+    color: var(--ink-900);
+    line-height: 1.35;
+  }
+  .related-excerpt {
+    font-size: 13.5px;
+    color: var(--ink-500);
+    margin: 0;
+    line-height: 1.55;
   }
 </style>
