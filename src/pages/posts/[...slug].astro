@@ -16,15 +16,19 @@ const { Content } = await render(entry);
 ---
 
 <PostLayout
+  slug={entry.id}
   title={entry.data.title}
   excerpt={entry.data.excerpt}
   publishedAt={entry.data.publishedAt}
+  updatedAt={entry.data.updatedAt}
   category={entry.data.category}
   readingMinutes={entry.data.readingMinutes}
   icon={entry.data.icon}
   color={entry.data.color}
   lang={entry.data.lang}
   translationOf={entry.data.translationOf}
+  keywords={entry.data.keywords}
+  noindex={entry.data.noindex}
 >
   <Content />
 </PostLayout>

@@ -1,41 +1,54 @@
 ---
 import Layout from "./Layout.astro";
 import Comments from "../components/Comments.astro";
+import { SITE, SITE_NAME, AUTHOR } from "../lib/site";
 
 interface Props {
   title: string;
   excerpt: string;
   publishedAt: Date;
+  updatedAt?: Date;
   category: "tech" | "research" | "production" | "meta";
   readingMinutes: number;
   icon: string;
   color: "coral" | "mint" | "yellow" | "purple" | "blue";
   lang?: "es" | "en";
   translationOf?: string;
+  keywords?: string[];
+  noindex?: boolean;
+  slug: string;
 }
 
 const {
   title,
   excerpt,
   publishedAt,
+  updatedAt,
   category,
   readingMinutes,
   icon,
   color,
   lang = "es",
   translationOf,
+  keywords,
+  noindex = false,
+  slug,
 } = Astro.props;
 
 const categoryLabel =
-  category === "tech" ? (lang === "es" ? "Tech" : "Tech") :
-  category === "research" ? (lang === "es" ? "Research" : "Research") :
+  category === "tech" ? "Tech" :
+  category === "research" ? "Research" :
   category === "production" ? (lang === "es" ? "Producción" : "Production") :
-  (lang === "es" ? "Meta" : "Meta");
+  "Meta";
 
 const dateLocale = lang === "es" ? "es-ES" : "en-GB";
 const dateFmt = new Intl.DateTimeFormat(dateLocale, {
   day: "2-digit", month: "short", year: "numeric",
 }).format(publishedAt);
+
+const updatedFmt = updatedAt
+  ? new Intl.DateTimeFormat(dateLocale, { day: "2-digit", month: "short", year: "numeric" }).format(updatedAt)
+  : null;
 
 const readLabel = lang === "es" ? "min de lectura" : "min read";
 const backLabel = lang === "es" ? "Todos los posts" : "All posts";
@@ -44,20 +57,101 @@ const footLabel = lang === "es"
   : "Found something wrong?";
 const footCta = lang === "es" ? "Escríbeme" : "Email me";
 const footTail = lang === "es" ? " y lo arreglo." : " and I'll fix it.";
-
-const colorVar =
-  color === "coral" ? "var(--coral)" :
-  color === "mint" ? "var(--mint)" :
-  color === "yellow" ? "var(--yellow)" :
-  color === "purple" ? "var(--purple)" :
-  "var(--blue)";
+const updatedLabel = lang === "es" ? "Actualizado" : "Updated";
+const byLabel = lang === "es" ? "Por" : "By";
 
 const otherLang = lang === "es" ? "en" : "es";
 const otherLangLabel = otherLang === "es" ? "ES" : "EN";
 const currentLangLabel = lang === "es" ? "ES" : "EN";
+
+// Post URLs — self + counterpart via translationOf
+const selfPath = `/posts/${slug}`;
+const selfUrl = `${SITE}${selfPath}`;
+const counterpartPath = translationOf ? `/posts/${translationOf}` : null;
+const counterpartUrl = counterpartPath ? `${SITE}${counterpartPath}` : null;
+
+// hreflang triple — self, counterpart, x-default (EN by default per plan §Open Q 4)
+const alternates = counterpartUrl
+  ? [
+      { hreflang: lang === "es" ? "es" : "en", href: selfUrl },
+      { hreflang: otherLang, href: counterpartUrl },
+      { hreflang: "x-default", href: lang === "en" ? selfUrl : counterpartUrl },
+    ]
+  : [
+      { hreflang: lang === "es" ? "es" : "en", href: selfUrl },
+      { hreflang: "x-default", href: selfUrl },
+    ];
+
+// OG image per post (Phase C endpoint) with fallback
+const ogImage = `/og/${slug}.png`;
+const ogImageAlt = `${title} — ${categoryLabel} · ${SITE_NAME}`;
+
+// BlogPosting + BreadcrumbList JSON-LD
+const blogPosting = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "@id": `${selfUrl}#article`,
+  mainEntityOfPage: { "@type": "WebPage", "@id": selfUrl },
+  headline: title,
+  description: excerpt,
+  image: `${SITE}${ogImage}`,
+  datePublished: publishedAt.toISOString(),
+  dateModified: (updatedAt ?? publishedAt).toISOString(),
+  author: { "@id": `${SITE}/#person` },
+  publisher: { "@id": `${SITE}/#person` },
+  inLanguage: lang === "es" ? "es-ES" : "en-US",
+  articleSection: categoryLabel,
+  keywords: keywords?.join(", "),
+  wordCount: Math.round(readingMinutes * 220),
+  ...(counterpartUrl && {
+    translationOfWork: lang === "en" ? undefined : { "@id": `${counterpartUrl}#article` },
+    workTranslation: lang === "en" ? { "@id": `${counterpartUrl}#article` } : undefined,
+  }),
+};
+
+const breadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: SITE_NAME,
+      item: SITE,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Blog",
+      item: `${SITE}/blog`,
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: title,
+      item: selfUrl,
+    },
+  ],
+};
 ---
 
-<Layout title={`${title} — Xabier Ariznabarreta`} description={excerpt} current="blog">
+<Layout
+  title={`${title} — ${SITE_NAME}`}
+  description={excerpt}
+  current="blog"
+  lang={lang}
+  ogType="article"
+  ogImage={ogImage}
+  ogImageAlt={ogImageAlt}
+  publishedTime={publishedAt}
+  modifiedTime={updatedAt}
+  articleAuthor={AUTHOR.name}
+  articleSection={categoryLabel}
+  articleTags={keywords}
+  alternates={alternates}
+  noindex={noindex}
+  jsonLd={[blogPosting, breadcrumb]}
+>
 
   <a href="/blog" style="display:inline-flex;gap:6px;align-items:center;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-400);margin-bottom:28px;">
     <iconify-icon icon="ph:arrow-left" width="14" height="14"></iconify-icon>
@@ -67,7 +161,7 @@ const currentLangLabel = lang === "es" ? "ES" : "EN";
   <div class="post-hero">
     <div class="post-meta">
       <span class="badge" data-c={color}>{categoryLabel}</span>
-      <span>{dateFmt}</span>
+      <time datetime={publishedAt.toISOString()}>{dateFmt}</time>
       <span>· {readingMinutes} {readLabel}</span>
       {translationOf && (
         <span class="lang-toggle" role="group" aria-label="Language">
@@ -79,6 +173,13 @@ const currentLangLabel = lang === "es" ? "ES" : "EN";
 
     <h1>{title}</h1>
     <p class="lede">{excerpt}</p>
+
+    <address class="byline" rel="author">
+      {byLabel} <a href="/about" rel="author">{AUTHOR.name}</a>
+      {updatedFmt && (
+        <span class="updated"> · {updatedLabel} <time datetime={updatedAt!.toISOString()}>{updatedFmt}</time></span>
+      )}
+    </address>
   </div>
 
   <article class="prose">
@@ -121,5 +222,21 @@ const currentLangLabel = lang === "es" ? "ES" : "EN";
   }
   .lang-toggle .lang-other:hover {
     color: var(--ink-900);
+  }
+  .byline {
+    display: block;
+    margin-top: 12px;
+    font-style: normal;
+    font-size: 13px;
+    color: var(--ink-500);
+  }
+  .byline a {
+    color: var(--ink-700);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .byline .updated {
+    color: var(--ink-400);
   }
 </style>

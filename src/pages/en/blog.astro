@@ -1,9 +1,9 @@
 ---
 export const prerender = true;
-import Layout from "../layouts/Layout.astro";
+import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 
-const all = (await getCollection("posts", ({ data }) => !data.draft && data.lang === "es"))
+const all = (await getCollection("posts", ({ data }) => !data.draft && data.lang === "en"))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 
 const dateFmt = (d: Date) =>
@@ -15,12 +15,12 @@ const categoryLabel = (c: string) =>
 
 <Layout
   title="Blog — Xabier Ariznabarreta"
-  description="Cuaderno público de research. Tech deep-dives, notas de research, lecciones de producción y reflexiones meta del pivote a AI safety."
+  description="Public research notebook. Tech deep-dives, research notes, production lessons, and meta reflections from the pivot to AI safety."
   current="blog"
-  lang="es"
+  lang="en"
   alternates={[
-    { hreflang: "es", href: "https://xabier.me/blog" },
     { hreflang: "en", href: "https://xabier.me/en/blog" },
+    { hreflang: "es", href: "https://xabier.me/blog" },
     { hreflang: "x-default", href: "https://xabier.me/en/blog" },
   ]}
 >
@@ -41,9 +41,9 @@ const categoryLabel = (c: string) =>
   {all.length === 0 ? (
     <div class="card" style="padding:48px 32px; text-align:center; margin-top:8px;">
       <iconify-icon icon="ph:notebook" width="48" height="48" style="color:var(--ink-300);"></iconify-icon>
-      <h3 style="margin:16px 0 8px;">No posts yet</h3>
+      <h3 style="margin:16px 0 8px;">No English posts yet</h3>
       <p style="color:var(--ink-500); max-width:420px; margin:0 auto;">
-        The notebook is empty by design. First post lands soon. Until then, you can read the <a href="/about">about page</a> or follow <a href="https://github.com/Xabilimon1" target="_blank" rel="noopener">@Xabilimon1</a> on GitHub.
+        Everything is available in Spanish at <a href="/blog">/blog</a>. English translations follow.
       </p>
     </div>
   ) : (

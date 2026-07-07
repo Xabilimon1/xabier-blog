@@ -30,6 +30,9 @@ const posts = defineCollection({
     draft: z.boolean().default(false),
     lang: z.enum(["es", "en"]).default("es"),
     translationOf: z.string().optional(),
+    keywords: z.array(z.string()).optional(),
+    noindex: z.boolean().default(false),
+    image: z.string().optional(),
   }),
 });
 

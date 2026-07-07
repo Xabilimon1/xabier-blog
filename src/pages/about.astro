@@ -1,9 +1,32 @@
 ---
 export const prerender = true;
 import Layout from "../layouts/Layout.astro";
+import { SITE, AUTHOR } from "../lib/site";
+
+const profilePage = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "@id": `${SITE}/about#profilepage`,
+  url: `${SITE}/about`,
+  mainEntity: { "@id": `${SITE}/#person` },
+  dateModified: new Date("2026-07-07").toISOString(),
+  breadcrumb: {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE },
+      { "@type": "ListItem", position: 2, name: "About", item: `${SITE}/about` },
+    ],
+  },
+};
 ---
 
-<Layout title="About — Xabier Ariznabarreta" current="about">
+<Layout
+  title="About — Xabier Ariznabarreta"
+  description="Xabier Ariznabarreta: 19, Madrid. Second-year AI Engineering student at UFV. Pivoting from shipping production agents to alignment / interpretability research."
+  current="about"
+  lang="en"
+  jsonLd={profilePage}
+>
 
   <div class="about-page-hero about-page-hero--text">
     <div class="kicker">About</div>

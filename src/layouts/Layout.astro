@@ -1,40 +1,195 @@
 ---
 import Sidebar from "../components/Sidebar.astro";
+import JsonLd from "../components/JsonLd.astro";
 import Analytics from "@vercel/analytics/astro";
 import SpeedInsights from "@vercel/speed-insights/astro";
+import {
+  SITE,
+  SITE_HOST,
+  SITE_NAME,
+  SITE_DESCRIPTION_ES,
+  SITE_DESCRIPTION_EN,
+  AUTHOR,
+  canonicalFor,
+} from "../lib/site";
+
+interface Alternate {
+  href: string;
+  hreflang: string;
+}
 
 interface Props {
   title: string;
   description?: string;
   current: "home" | "about" | "resume" | "blog" | "contact";
+  lang?: "es" | "en";
+  ogType?: "website" | "article" | "profile";
+  ogImage?: string;
+  ogImageAlt?: string;
+  publishedTime?: Date | string;
+  modifiedTime?: Date | string;
+  articleAuthor?: string;
+  articleSection?: string;
+  articleTags?: string[];
+  alternates?: Alternate[];
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
 const {
   title,
-  description = "Xabier Ariznabarreta — AI agent builder & researcher-in-training. Madrid.",
   current,
+  lang = "es",
+  ogType = "website",
+  ogImage,
+  ogImageAlt,
+  publishedTime,
+  modifiedTime,
+  articleAuthor,
+  articleSection,
+  articleTags,
+  alternates,
+  noindex = false,
+  jsonLd,
 } = Astro.props;
+
+const defaultDescription = lang === "es" ? SITE_DESCRIPTION_ES : SITE_DESCRIPTION_EN;
+const description = Astro.props.description ?? defaultDescription;
+
+const canonical = canonicalFor(Astro.url.pathname);
+
+// Preview / non-canonical host protection: index only if we're on xabier.me
+const isCanonicalHost = Astro.url.hostname === SITE_HOST;
+const shouldNoindex = noindex || !isCanonicalHost;
+
+const ogLocale = lang === "es" ? "es_ES" : "en_US";
+const ogAltLocale = lang === "es" ? "en_US" : "es_ES";
+
+const resolvedOgImage = ogImage
+  ? new URL(ogImage, SITE).href
+  : new URL("/og-default.png", SITE).href;
+const resolvedOgAlt = ogImageAlt ?? `${SITE_NAME} — ${lang === "es" ? "cuaderno de research" : "research notebook"}`;
+
+const toIso = (d?: Date | string) =>
+  typeof d === "string" ? d : d instanceof Date ? d.toISOString() : undefined;
+const publishedIso = toIso(publishedTime);
+const modifiedIso = toIso(modifiedTime);
+
+// Global Person + WebSite JSON-LD — always emitted
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": `${SITE}/#person`,
+  name: AUTHOR.name,
+  alternateName: AUTHOR.alternateName,
+  jobTitle: AUTHOR.jobTitle,
+  url: SITE,
+  image: `${SITE}/og-default.png`,
+  email: `mailto:${AUTHOR.email}`,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: AUTHOR.location,
+    addressCountry: "ES",
+  },
+  worksFor: {
+    "@type": "Organization",
+    name: "Independent",
+  },
+  knowsAbout: [
+    "AI safety",
+    "AI alignment",
+    "Large language models",
+    "LLM agents",
+    "Evaluation harnesses",
+    "Mechanistic interpretability",
+  ],
+  sameAs: AUTHOR.sameAs,
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${SITE}/#website`,
+  url: SITE,
+  name: SITE_NAME,
+  inLanguage: lang === "es" ? "es-ES" : "en-US",
+  publisher: { "@id": `${SITE}/#person` },
+  description: defaultDescription,
+};
+
+const globalJsonLd: Array<Record<string, unknown>> = [personSchema, websiteSchema];
+const combinedJsonLd = jsonLd
+  ? Array.isArray(jsonLd)
+    ? [...globalJsonLd, ...jsonLd]
+    : [...globalJsonLd, jsonLd]
+  : globalJsonLd;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{title}</title>
   <meta name="description" content={description} />
+  <meta name="author" content={AUTHOR.name} />
+  <meta name="theme-color" content="#f7f4ef" />
+
+  <link rel="canonical" href={canonical} />
+  {shouldNoindex && <meta name="robots" content="noindex, nofollow" />}
+  {!shouldNoindex && <meta name="robots" content="index, follow, max-image-preview:large" />}
+
+  {alternates?.map((a) => (
+    <link rel="alternate" hreflang={a.hreflang} href={a.href} />
+  ))}
+
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3" />
   <link rel="alternate icon" type="image/x-icon" href="/favicon.ico?v=3" />
+  <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME} — RSS`} href="/rss.xml" />
 
-  <meta property="og:type" content="website" />
+  <!-- Open Graph -->
+  <meta property="og:type" content={ogType} />
+  <meta property="og:site_name" content={SITE_NAME} />
+  <meta property="og:locale" content={ogLocale} />
+  <meta property="og:locale:alternate" content={ogAltLocale} />
+  <meta property="og:url" content={canonical} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
+  <meta property="og:image" content={resolvedOgImage} />
+  <meta property="og:image:alt" content={resolvedOgAlt} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/png" />
+
+  {ogType === "article" && publishedIso && (
+    <meta property="article:published_time" content={publishedIso} />
+  )}
+  {ogType === "article" && modifiedIso && (
+    <meta property="article:modified_time" content={modifiedIso} />
+  )}
+  {ogType === "article" && (
+    <meta property="article:author" content={articleAuthor ?? AUTHOR.name} />
+  )}
+  {ogType === "article" && articleSection && (
+    <meta property="article:section" content={articleSection} />
+  )}
+  {ogType === "article" && articleTags?.map((t) => (
+    <meta property="article:tag" content={t} />
+  ))}
+
+  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={resolvedOgImage} />
+  <meta name="twitter:image:alt" content={resolvedOgAlt} />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css?v=5" />
+
+  <JsonLd data={combinedJsonLd} />
 </head>
 <body>
   <main class="shell">
