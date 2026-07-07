@@ -17,22 +17,22 @@ const { category } = Astro.params;
 const categoryMeta = {
   tech: {
     title: "Tech deep-dives",
-    description: "Rigorous explanations of LLM internals, transformers from scratch, mech interp, eval methodology. Depth before speed.",
+    description: "Deep-dives técnicos sobre LLMs, transformers, mech interp y evaluación. Cuaderno público de research de Xabier Ariznabarreta.",
     intro: "Deep-dives técnicos: cómo funcionan por dentro los modelos que uso todos los días. Priorizo la profundidad y la reproducibilidad sobre la velocidad. Si algo requiere leer el paper original y hacer las cuentas a mano, se hace.",
   },
   research: {
     title: "Research notes",
-    description: "Work-in-progress research: hypotheses, design choices, ablations, null findings. Public notebook for the harness-ablation paper.",
+    description: "Notas de research en curso: hipótesis, decisiones de diseño, ablations, null findings. Notebook público del paper de ablation del harness.",
     intro: "Notas de research en curso — el paper de ablation del harness, ideas que estoy explorando, decisiones de diseño. Publico también los null findings porque forman parte del artefacto tanto como los positivos.",
   },
   production: {
     title: "Production lessons",
-    description: "Honest post-mortems and case studies from LLM agents I've shipped: auth bugs, prompt injection, cost blowouts, and the fixes.",
+    description: "Postmortems honestos y case studies de agentes LLM que he shippado a producción. Auth bugs, prompt injection, blowups de coste, los fixes.",
     intro: "Lecciones honestas de sistemas que he shippado — bugs de autenticación, prompt injection, blow-ups de coste, las decisiones de arquitectura que salieron mal. Los mistakes van con el mismo peso que los aciertos.",
   },
   meta: {
     title: "Meta journey",
-    description: "Reflections on the pivot from production engineering to AI safety research at 19. ARENA progress, self-critique, decisions I'm reversing.",
+    description: "Reflexiones sobre el pivote de production engineering a AI safety research a los 19. ARENA, autocrítica, decisiones que estoy revirtiendo.",
     intro: "Reflexiones sobre el pivote de production engineering a AI safety research a los 19. Progreso en ARENA, decisiones que estoy revirtiendo, autocrítica pública. Sin filtros de bio de Twitter.",
   },
 } as const;
@@ -45,6 +45,29 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft && data.ca
 
 const dateFmt = (d: Date) =>
   new Intl.DateTimeFormat("es-ES", { day: "2-digit", month: "short", year: "numeric" }).format(d);
+
+// Breadcrumb JSON-LD for category page
+const breadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Xabier Ariznabarreta", item: "https://xabier.me" },
+    { "@type": "ListItem", position: 2, name: "Blog", item: "https://xabier.me/blog" },
+    { "@type": "ListItem", position: 3, name: meta.title, item: `https://xabier.me/blog/${category}` },
+  ],
+};
+
+const collectionPage = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": `https://xabier.me/blog/${category}#collectionpage`,
+  url: `https://xabier.me/blog/${category}`,
+  name: meta.title,
+  description: meta.description,
+  inLanguage: "es-ES",
+  isPartOf: { "@id": "https://xabier.me/#website" },
+  breadcrumb: { "@id": `https://xabier.me/blog/${category}#breadcrumb` },
+};
 ---
 
 <Layout
@@ -52,6 +75,7 @@ const dateFmt = (d: Date) =>
   description={meta.description}
   current="blog"
   lang="es"
+  jsonLd={[collectionPage, breadcrumb]}
 >
 
   <a href="/blog" style="display:inline-flex;gap:6px;align-items:center;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-400);margin-bottom:20px;">

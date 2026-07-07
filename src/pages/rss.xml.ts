@@ -9,14 +9,14 @@ export async function GET(context: APIContext) {
     title: "Xabier Ariznabarreta — research notebook",
     description:
       "Builder pivoting to researcher. Notes on LLM evals, mech interp, agent harnesses, and the production lessons that pushed me here.",
-    site: context.site ?? "https://xabier-blog.vercel.app",
+    site: context.site ?? "https://xabier.me",
     items: posts
       .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
       .map((post) => ({
         title: post.data.title,
         description: post.data.excerpt,
         pubDate: post.data.publishedAt,
-        link: `/posts/${post.id}/`,
+        link: `/posts/${post.id}`,
       })),
     customData: `<language>es-ES</language>`,
   });
