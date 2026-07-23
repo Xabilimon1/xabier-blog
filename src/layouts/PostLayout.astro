@@ -11,8 +11,8 @@ interface Props {
   updatedAt?: Date;
   category: "tech" | "research" | "production" | "meta";
   readingMinutes: number;
-  icon: string;
-  color: "coral" | "mint" | "yellow" | "purple" | "blue";
+  icon?: string;
+  color?: "coral" | "mint" | "yellow" | "purple" | "blue";
   lang?: "es" | "en";
   translationOf?: string;
   keywords?: string[];
@@ -27,8 +27,6 @@ const {
   updatedAt,
   category,
   readingMinutes,
-  icon,
-  color,
   lang = "es",
   translationOf,
   keywords,
@@ -36,59 +34,29 @@ const {
   slug,
 } = Astro.props;
 
-const categoryLabel =
-  category === "tech" ? "Tech" :
-  category === "research" ? "Research" :
-  category === "production" ? (lang === "es" ? "Producción" : "Production") :
-  "Meta";
-
 const dateLocale = lang === "es" ? "es-ES" : "en-GB";
 const dateFmt = new Intl.DateTimeFormat(dateLocale, {
   day: "2-digit", month: "short", year: "numeric",
 }).format(publishedAt);
-
 const updatedFmt = updatedAt
   ? new Intl.DateTimeFormat(dateLocale, { day: "2-digit", month: "short", year: "numeric" }).format(updatedAt)
   : null;
 
 const readLabel = lang === "es" ? "min de lectura" : "min read";
-const backLabel = lang === "es" ? "Todos los posts" : "All posts";
 const footLabel = lang === "es"
   ? "¿Encontraste algo mal?"
   : "Found something wrong?";
 const footCta = lang === "es" ? "Escríbeme" : "Email me";
 const footTail = lang === "es" ? " y lo arreglo." : " and I'll fix it.";
 const updatedLabel = lang === "es" ? "Actualizado" : "Updated";
-const byLabel = lang === "es" ? "Por" : "By";
-
 const otherLang = lang === "es" ? "en" : "es";
-const otherLangLabel = otherLang === "es" ? "ES" : "EN";
-const currentLangLabel = lang === "es" ? "ES" : "EN";
+const otherLangLabel = otherLang === "es" ? "Español" : "English";
 
-// Related posts — same category + lang, exclude self, limit 3, sorted by publishedAt desc
-const relatedPool = await getCollection(
-  "posts",
-  ({ data, id }) =>
-    !data.draft &&
-    data.category === category &&
-    data.lang === lang &&
-    id !== Astro.props.slug,
-);
-const relatedPosts = relatedPool
-  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
-  .slice(0, 3);
-const relatedFmt = new Intl.DateTimeFormat(dateLocale, {
-  day: "2-digit", month: "short", year: "numeric",
-});
-const relatedHeading = lang === "es" ? "También en " + categoryLabel : "More " + categoryLabel;
-
-// Post URLs — self + counterpart via translationOf
 const selfPath = `/posts/${slug}`;
 const selfUrl = `${SITE}${selfPath}`;
 const counterpartPath = translationOf ? `/posts/${translationOf}` : null;
 const counterpartUrl = counterpartPath ? `${SITE}${counterpartPath}` : null;
 
-// hreflang triple — self, counterpart, x-default (EN by default per plan §Open Q 4)
 const alternates = counterpartUrl
   ? [
       { hreflang: lang === "es" ? "es" : "en", href: selfUrl },
@@ -100,11 +68,6 @@ const alternates = counterpartUrl
       { hreflang: "x-default", href: selfUrl },
     ];
 
-// OG image per post (Phase C endpoint) with fallback
-const ogImage = `/og/${slug}.png`;
-const ogImageAlt = `${title} — ${categoryLabel} · ${SITE_NAME}`;
-
-// BlogPosting + BreadcrumbList JSON-LD
 const blogPosting = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
@@ -112,13 +75,12 @@ const blogPosting = {
   mainEntityOfPage: { "@type": "WebPage", "@id": selfUrl },
   headline: title,
   description: excerpt,
-  image: `${SITE}${ogImage}`,
   datePublished: publishedAt.toISOString(),
   dateModified: (updatedAt ?? publishedAt).toISOString(),
   author: { "@id": `${SITE}/#person` },
   publisher: { "@id": `${SITE}/#person` },
   inLanguage: lang === "es" ? "es-ES" : "en-US",
-  articleSection: categoryLabel,
+  articleSection: category,
   keywords: keywords?.join(", "),
   wordCount: Math.round(readingMinutes * 220),
   ...(counterpartUrl && {
@@ -131,26 +93,25 @@ const breadcrumb = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: SITE_NAME,
-      item: SITE,
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Blog",
-      item: `${SITE}/blog`,
-    },
-    {
-      "@type": "ListItem",
-      position: 3,
-      name: title,
-      item: selfUrl,
-    },
+    { "@type": "ListItem", position: 1, name: SITE_NAME, item: SITE },
+    { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE}${lang === "en" ? "/en/blog" : "/blog"}` },
+    { "@type": "ListItem", position: 3, name: title, item: selfUrl },
   ],
 };
+
+// Related — same category + lang, exclude self, up to 3
+const relatedPool = await getCollection(
+  "posts",
+  ({ data, id }) =>
+    !data.draft && data.category === category && data.lang === lang && id !== slug,
+);
+const relatedPosts = relatedPool
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+  .slice(0, 3);
+const relatedFmt = new Intl.DateTimeFormat(dateLocale, {
+  day: "2-digit", month: "short", year: "numeric",
+});
+const relatedHeading = lang === "es" ? "Más lectura" : "More reading";
 ---
 
 <Layout
@@ -159,169 +120,57 @@ const breadcrumb = {
   current="blog"
   lang={lang}
   ogType="article"
-  ogImage={ogImage}
-  ogImageAlt={ogImageAlt}
   publishedTime={publishedAt}
   modifiedTime={updatedAt}
   articleAuthor={AUTHOR.name}
-  articleSection={categoryLabel}
+  articleSection={category}
   articleTags={keywords}
   alternates={alternates}
   noindex={noindex}
   jsonLd={[blogPosting, breadcrumb]}
 >
 
-  <a href="/blog" style="display:inline-flex;gap:6px;align-items:center;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-400);margin-bottom:28px;">
-    <iconify-icon icon="ph:arrow-left" width="14" height="14"></iconify-icon>
-    {backLabel}
-  </a>
+  <article>
+    <header class="post-header">
+      <h1>{title}</h1>
+      <p class="meta">
+        <time datetime={publishedAt.toISOString()}>{dateFmt}</time>
+        &nbsp;·&nbsp; {readingMinutes} {readLabel}
+        {updatedFmt && (
+          <>&nbsp;·&nbsp; {updatedLabel} <time datetime={updatedAt!.toISOString()}>{updatedFmt}</time></>
+        )}
+        {translationOf && (
+          <span class="lang-toggle">
+            <span class="sep">·</span>
+            <a href={`/posts/${translationOf}`}>{otherLangLabel}</a>
+          </span>
+        )}
+      </p>
+    </header>
 
-  <div class="post-hero">
-    <div class="post-meta">
-      <span class="badge" data-c={color}>{categoryLabel}</span>
-      <time datetime={publishedAt.toISOString()}>{dateFmt}</time>
-      <span>· {readingMinutes} {readLabel}</span>
-      {translationOf && (
-        <span class="lang-toggle" role="group" aria-label="Language">
-          <span class="lang-current" aria-current="true">{currentLangLabel}</span>
-          <a href={`/posts/${translationOf}`} class="lang-other" aria-label={`Read in ${otherLangLabel}`}>{otherLangLabel}</a>
-        </span>
-      )}
+    <div class="post-content">
+      <slot />
     </div>
-
-    <h1>{title}</h1>
-    <p class="lede">{excerpt}</p>
-
-    <address class="byline" rel="author">
-      {byLabel} <a href="/about" rel="author">{AUTHOR.name}</a>
-      {updatedFmt && (
-        <span class="updated"> · {updatedLabel} <time datetime={updatedAt!.toISOString()}>{updatedFmt}</time></span>
-      )}
-    </address>
-  </div>
-
-  <article class="prose">
-    <slot />
   </article>
 
-  <div class="foot-note">
+  <p class="foot-note">
     {footLabel} <a href="/contact">{footCta}</a>{footTail}
-  </div>
+  </p>
 
   {relatedPosts.length > 0 && (
     <section class="related">
       <h2 class="related-heading">{relatedHeading}</h2>
-      <div class="related-list">
+      <ul class="related-list">
         {relatedPosts.map((post) => (
-          <a href={`/posts/${post.id}`} class="related-item">
-            <div class="related-meta">
-              <span class="badge" data-c={post.data.color}>{categoryLabel}</span>
-              <time datetime={post.data.publishedAt.toISOString()}>{relatedFmt.format(post.data.publishedAt)}</time>
-            </div>
-            <h3 class="related-title">{post.data.title}</h3>
-            <p class="related-excerpt">{post.data.excerpt}</p>
-          </a>
+          <li>
+            <span class="date">{relatedFmt.format(post.data.publishedAt)}</span>
+            <a href={`/posts/${post.id}`}>{post.data.title}</a>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   )}
 
   <Comments />
 
 </Layout>
-
-<style>
-  .lang-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 2px;
-    border: 1px solid var(--ink-200);
-    border-radius: 999px;
-    padding: 2px;
-    margin-left: 4px;
-    font-size: 11px;
-    letter-spacing: 0.08em;
-  }
-  .lang-toggle .lang-current,
-  .lang-toggle .lang-other {
-    padding: 3px 10px;
-    border-radius: 999px;
-    text-decoration: none;
-    line-height: 1;
-  }
-  .lang-toggle .lang-current {
-    background: var(--ink-900);
-    color: var(--paper);
-  }
-  .lang-toggle .lang-other {
-    color: var(--ink-500);
-  }
-  .lang-toggle .lang-other:hover {
-    color: var(--ink-900);
-  }
-  .byline {
-    display: block;
-    margin-top: 12px;
-    font-style: normal;
-    font-size: 13px;
-    color: var(--ink-500);
-  }
-  .byline a {
-    color: var(--ink-700);
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 3px;
-  }
-  .byline .updated {
-    color: var(--ink-400);
-  }
-  .related {
-    margin-top: 48px;
-    padding-top: 32px;
-    border-top: 1px solid var(--ink-200, #e6e5ef);
-  }
-  .related-heading {
-    font-size: 14px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-500);
-    margin: 0 0 20px;
-  }
-  .related-list {
-    display: grid;
-    gap: 16px;
-  }
-  .related-item {
-    display: block;
-    padding: 20px;
-    border: 1px solid var(--ink-200, #e6e5ef);
-    border-radius: 12px;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color .15s, transform .15s;
-  }
-  .related-item:hover {
-    border-color: var(--ink-400);
-    transform: translateY(-1px);
-  }
-  .related-meta {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    font-size: 12px;
-    color: var(--ink-400);
-    margin-bottom: 6px;
-  }
-  .related-title {
-    font-size: 17px;
-    margin: 0 0 6px;
-    color: var(--ink-900);
-    line-height: 1.35;
-  }
-  .related-excerpt {
-    font-size: 13.5px;
-    color: var(--ink-500);
-    margin: 0;
-    line-height: 1.55;
-  }
-</style>

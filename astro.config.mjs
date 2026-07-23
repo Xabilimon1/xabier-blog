@@ -10,6 +10,14 @@ export default defineConfig({
   trailingSlash: 'never',
   output: 'server',
   build: { format: 'file' },
+  markdown: {
+    // Light syntax highlighting to match the Karpathy-flat aesthetic.
+    // github-light: white bg, colored keywords, italic gray comments.
+    shikiConfig: {
+      theme: 'github-light',
+      wrap: false, // long lines scroll horizontally instead of wrapping
+    },
+  },
   vite: {
     plugins: [tailwindcss()],
   },

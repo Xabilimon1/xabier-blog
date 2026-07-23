@@ -9,9 +9,6 @@ const all = (await getCollection("posts", ({ data }) => !data.draft && data.lang
 const dateFmt = (d: Date) =>
   new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(d);
 
-const categoryLabel = (c: string) =>
-  c === "tech" ? "Tech" : c === "research" ? "Research" : c === "production" ? "Production" : "Meta";
-
 const blogJsonLd = [
   {
     "@context": "https://schema.org",
@@ -22,7 +19,7 @@ const blogJsonLd = [
     inLanguage: "en-US",
     author: { "@id": "https://xabier.me/#person" },
     publisher: { "@id": "https://xabier.me/#person" },
-    description: "Public research notebook. Tech deep-dives, research notes, production lessons, and meta reflections from the pivot to AI safety.",
+    description: "Public research notebook. Notes on LLM evals, mech interp, agent harnesses, and production lessons.",
     blogPost: all.slice(0, 5).map((p) => ({
       "@type": "BlogPosting",
       "@id": `https://xabier.me/posts/${p.id}#article`,
@@ -45,7 +42,7 @@ const blogJsonLd = [
 
 <Layout
   title="Blog — Xabier Ariznabarreta"
-  description="Public research notebook. Tech deep-dives, research notes, production lessons, and meta reflections from the pivot to AI safety."
+  description="Public research notebook. Notes on LLM evals, mech interp, agent harnesses, and production lessons."
   current="blog"
   lang="en"
   alternates={[
@@ -55,74 +52,25 @@ const blogJsonLd = [
   ]}
   jsonLd={blogJsonLd}
 >
-
-  <h2 class="section-heading">Blog</h2>
-  <p style="color:var(--ink-500); margin: -8px 0 28px; font-size: 14.5px; max-width: 640px;">
-    A public research notebook. Four kinds of posts: technical deep-dives, research notes, production lessons, and meta-journey reflections.
+  <h1 style="font-size:32px; font-weight:300; letter-spacing:-1.5px; margin:20px 0 8px;">Blog</h1>
+  <p class="lead">
+    Public research notebook. All posts, chronological.
+    &nbsp;<a href="/blog" style="font-size:14px;">Español</a>
   </p>
 
-  <div class="chip-row">
-    <button class="chip" data-cat="all" aria-pressed="true">All</button>
-    <button class="chip" data-cat="tech">Tech deep-dive</button>
-    <button class="chip" data-cat="research">Research notes</button>
-    <button class="chip" data-cat="production">Production</button>
-    <button class="chip" data-cat="meta">Meta</button>
-  </div>
-
   {all.length === 0 ? (
-    <div class="card" style="padding:48px 32px; text-align:center; margin-top:8px;">
-      <iconify-icon icon="ph:notebook" width="48" height="48" style="color:var(--ink-300);"></iconify-icon>
-      <h3 style="margin:16px 0 8px;">No English posts yet</h3>
-      <p style="color:var(--ink-500); max-width:420px; margin:0 auto;">
-        Everything is available in Spanish at <a href="/blog">/blog</a>. English translations follow.
-      </p>
-    </div>
+    <p style="color:#818181; font-size:15px;">
+      No English posts yet. Everything is in Spanish at <a href="/blog">/blog</a> — translations follow.
+    </p>
   ) : (
-    <div class="posts">
+    <ul class="post-list">
       {all.map((post) => (
-        <a href={`/posts/${post.id}`} class="post-card" data-cat={post.data.category}>
-          <div class="post-cover" data-c={post.data.color}>
-            <iconify-icon icon={post.data.icon} width="36" height="36"></iconify-icon>
-          </div>
-          <div>
-            <div class="post-meta">
-              <span class="badge" data-c={post.data.color}>{categoryLabel(post.data.category)}</span>
-              <span>{dateFmt(post.data.publishedAt)}</span>
-              <span>· {post.data.readingMinutes} min read</span>
-            </div>
-            <h3 class="post-title">{post.data.title}</h3>
-            <p class="post-excerpt">{post.data.excerpt}</p>
-          </div>
-          <div class="post-arrow">
-            <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
-          </div>
-        </a>
+        <li>
+          <span class="post-date">{dateFmt(post.data.publishedAt)}</span>
+          <a class="post-link" href={`/posts/${post.id}`}>{post.data.title}</a>
+          <p class="post-excerpt">{post.data.excerpt}</p>
+        </li>
       ))}
-    </div>
+    </ul>
   )}
-
-  <div class="foot-note">
-    Want to discuss anything? <a href="/contact">Send me a note.</a>
-  </div>
-
-  <script is:inline>
-    const chips = document.querySelectorAll('.chip');
-    const cards = document.querySelectorAll('.post-card');
-
-    function applyFilter(cat) {
-      cards.forEach(card => {
-        const match = (cat === 'all') || (card.dataset.cat === cat);
-        card.classList.toggle('is-hidden', !match);
-      });
-    }
-
-    chips.forEach(chip => {
-      chip.addEventListener('click', () => {
-        chips.forEach(c => c.setAttribute('aria-pressed', 'false'));
-        chip.setAttribute('aria-pressed', 'true');
-        applyFilter(chip.dataset.cat);
-      });
-    });
-  </script>
-
 </Layout>

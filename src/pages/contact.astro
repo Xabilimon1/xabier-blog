@@ -9,78 +9,24 @@ import Layout from "../layouts/Layout.astro";
   current="contact"
   lang="en"
 >
+  <h1 style="font-size:32px; font-weight:300; letter-spacing:-1.5px; margin:20px 0 20px;">Contact</h1>
 
-  <h2 class="section-heading">Get In Touch</h2>
+  <div class="post-content">
+    <p>
+      Best reasons to write: a draft you want feedback on, a question about
+      something I posted, a research collaboration, or a typo on the site.
+    </p>
 
-  <div class="contact-grid" style="margin-top: 28px;">
-    <div class="contact-intro">
-      <h2>Let's talk.</h2>
-      <p>Best reasons to write: a draft you want feedback on, a question about something I posted, a research collaboration, or a typo on the site. Worst reasons: cold sales pitches and crypto schemes — I've already shipped one fake token by accident, I don't need a real one.</p>
-      <p>The fastest path is <a href="mailto:xabier.ariznabarreta@gmail.com">email</a>.</p>
+    <p>
+      Worst reasons: cold sales pitches and crypto schemes.
+    </p>
 
-      <div class="contact-details">
-        <div class="contact-row">
-          <div class="ico">
-            <iconify-icon icon="ph:envelope-simple" width="20" height="20"></iconify-icon>
-          </div>
-          <div>
-            <div class="lbl">Email</div>
-            <div class="val"><a href="mailto:xabier.ariznabarreta@gmail.com">xabier.ariznabarreta@gmail.com</a></div>
-          </div>
-        </div>
-        <div class="contact-row">
-          <div class="ico">
-            <iconify-icon icon="ph:github-logo-fill" width="20" height="20"></iconify-icon>
-          </div>
-          <div>
-            <div class="lbl">GitHub</div>
-            <div class="val"><a href="https://github.com/Xabilimon1" target="_blank" rel="noopener">@Xabilimon1</a></div>
-          </div>
-        </div>
-        <div class="contact-row">
-          <div class="ico">
-            <iconify-icon icon="ph:map-pin" width="16" height="16"></iconify-icon>
-          </div>
-          <div>
-            <div class="lbl">Based in</div>
-            <div class="val">Madrid, Spain</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <p>
+      Fastest path: <a href="mailto:xabier.ariznabarreta@gmail.com">xabier.ariznabarreta@gmail.com</a>.
+    </p>
 
-    <form
-      class="form-grid"
-      action="mailto:xabier.ariznabarreta@gmail.com"
-      method="post"
-      enctype="text/plain"
-    >
-      <div class="field">
-        <label for="f-name">Your name</label>
-        <input id="f-name" name="From" type="text" placeholder="Jane Doe" required />
-      </div>
-      <div class="field">
-        <label for="f-email">Email address</label>
-        <input id="f-email" name="Reply-To" type="email" placeholder="jane@example.com" required />
-      </div>
-      <div class="field full">
-        <label for="f-subject">Subject</label>
-        <input id="f-subject" name="subject" type="text" placeholder="Feedback on the harness-ablation draft" />
-      </div>
-      <div class="field full">
-        <label for="f-message">Message</label>
-        <textarea id="f-message" name="body" placeholder="Write your message here…" required></textarea>
-      </div>
-      <div class="field full">
-        <p style="font-size:12px; color:var(--ink-400); margin: 0 0 12px;">
-          Submitting opens your default email client with the message pre-filled. If that's awkward, copy <a href="mailto:xabier.ariznabarreta@gmail.com">xabier.ariznabarreta@gmail.com</a> instead.
-        </p>
-        <button type="submit" class="btn-pill">
-          Send message
-          <iconify-icon icon="ph:arrow-right" width="14" height="14"></iconify-icon>
-        </button>
-      </div>
-    </form>
+    <p>
+      Otherwise: <a href="https://github.com/Xabilimon1" rel="noopener me">GitHub</a> for code discussion.
+    </p>
   </div>
-
 </Layout>
