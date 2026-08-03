@@ -14,6 +14,9 @@ on:
         required: false
         default: ''
 
+# IndexNow is a best-effort SEO ping. A hiccup (429 rate-limit from rapid
+# pushes, a deploy-window 404 on the sitemap, etc.) must never fail CI and
+# page us. Every step below exits 0 and only warns.
 jobs:
   ping:
     runs-on: ubuntu-latest
@@ -25,14 +28,18 @@ jobs:
       - name: Discover URLs from sitemap
         id: urls
         run: |
-          set -euo pipefail
+          set -uo pipefail
           if [ -n "${{ github.event.inputs.urls }}" ]; then
             echo "urls=${{ github.event.inputs.urls }}" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          # Fetch sitemap and extract loc entries
-          curl -sf https://xabier.me/sitemap-0.xml > sm.xml
+          # Fetch sitemap; if it isn't ready yet, submit nothing (non-fatal).
+          if ! curl -sf https://xabier.me/sitemap-0.xml > sm.xml; then
+            echo "::warning::sitemap not reachable, skipping IndexNow ping"
+            echo "urls=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           urls=$(grep -oE '<loc>[^<]+</loc>' sm.xml | sed -E 's|</?loc>||g' | paste -sd ',' -)
           echo "urls=$urls" >> "$GITHUB_OUTPUT"
 
@@ -42,13 +49,13 @@ jobs:
           HOST: xabier.me
           KEY_LOCATION: https://xabier.me/40190ea6d02041d082d30a006aba1225.txt
         run: |
-          set -euo pipefail
+          set -uo pipefail
           URLS_CSV='${{ steps.urls.outputs.urls }}'
           if [ -z "$URLS_CSV" ]; then
-            echo "no URLs to submit" && exit 0
+            echo "no URLs to submit"
+            exit 0
           fi
 
-          # Convert CSV to JSON array
           URLS_JSON=$(python3 -c "import sys,json; print(json.dumps(sys.argv[1].split(',')))" "$URLS_CSV")
 
           BODY=$(python3 -c "
@@ -61,8 +68,21 @@ print(json.dumps({
 }))
 " "$URLS_JSON")
 
-          echo "Submitting $(echo "$URLS_JSON" | python3 -c 'import json,sys; print(len(json.load(sys.stdin)))') URLs to IndexNow..."
-          curl -sSf -X POST 'https://api.indexnow.org/indexnow' \
+          N=$(echo "$URLS_JSON" | python3 -c 'import json,sys; print(len(json.load(sys.stdin)))')
+          echo "Submitting $N URLs to IndexNow..."
+
+          CODE=$(curl -s -o resp.txt -w '%{http_code}' -X POST 'https://api.indexnow.org/indexnow' \
             -H 'Content-Type: application/json; charset=utf-8' \
-            --data "$BODY" \
-            -w '\nHTTP %{http_code}\n'
+            --data "$BODY" || echo "000")
+
+          echo "IndexNow responded HTTP $CODE"
+          cat resp.txt 2>/dev/null || true
+          echo
+
+          # Best-effort: 200/202 = accepted; anything else is a non-fatal warning.
+          if [ "$CODE" = "200" ] || [ "$CODE" = "202" ]; then
+            echo "IndexNow accepted the submission."
+          else
+            echo "::warning::IndexNow returned HTTP $CODE (non-fatal, ping is best-effort)"
+          fi
+          exit 0
