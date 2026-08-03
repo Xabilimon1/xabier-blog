@@ -56,21 +56,11 @@ jobs:
             exit 0
           fi
 
-          URLS_JSON=$(python3 -c "import sys,json; print(json.dumps(sys.argv[1].split(',')))" "$URLS_CSV")
+          URLS_JSON=$(python3 -c "import sys, json; print(json.dumps(sys.argv[1].split(',')))" "$URLS_CSV")
+          BODY=$(python3 -c "import os, sys, json; print(json.dumps({'host': os.environ['HOST'], 'key': os.environ['KEY'], 'keyLocation': os.environ['KEY_LOCATION'], 'urlList': json.loads(sys.argv[1])}))" "$URLS_JSON")
+          N=$(python3 -c "import sys, json; print(len(json.loads(sys.argv[1])))" "$URLS_JSON")
 
-          BODY=$(python3 -c "
-import json,sys,os
-print(json.dumps({
-  'host': os.environ['HOST'],
-  'key': os.environ['KEY'],
-  'keyLocation': os.environ['KEY_LOCATION'],
-  'urlList': json.loads(sys.argv[1]),
-}))
-" "$URLS_JSON")
-
-          N=$(echo "$URLS_JSON" | python3 -c 'import json,sys; print(len(json.load(sys.stdin)))')
           echo "Submitting $N URLs to IndexNow..."
-
           CODE=$(curl -s -o resp.txt -w '%{http_code}' -X POST 'https://api.indexnow.org/indexnow' \
             -H 'Content-Type: application/json; charset=utf-8' \
             --data "$BODY" || echo "000")
