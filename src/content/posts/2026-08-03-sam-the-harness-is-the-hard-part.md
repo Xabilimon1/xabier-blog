@@ -18,9 +18,9 @@ keywords:
   - "Vertex AI"
 ---
 
-I wrote a while back that what pushed me from building toward research was watching production break in ways the model was never responsible for. This is the longer version of that sentence, told through SAM, the agent I built at Xexterior.
+I wrote a while back that what pushed me from building toward research was watching production break in ways the model was never responsible for. This is the longer version of that sentence, told through SAM, an agent I built for a Spanish industrial company.
 
-Xexterior is an old industrial company that maintains the exterior of more than 2,500 buildings across Spain. Not the first place you'd look for an agent in production, but that's where I built one. SAM sits on top of the company's Salesforce and answers real questions from two very different audiences: the sales team, from inside Salesforce, and the field operators, from a mobile app. Same brain, two channels, real traffic.
+The company is an old industrial firm that maintains the exterior of more than 2,500 buildings across Spain. Not the first place you'd look for an agent in production, but that's where I built one. SAM sits on top of the company's Salesforce and answers real questions from two very different audiences: the sales team, from inside Salesforce, and the field operators, from a mobile app. Same brain, two channels, real traffic.
 
 I went into it assuming the language model was the hard part. Prompt it well, pick the right one, and the rest is plumbing. It turned out to be almost the opposite. In a system that touches a CRM with real customer data, the model is maybe a fifth of the work and almost none of the risk. The other four fifths are how you route a request, what you let the agent actually do, how you stop a tool call from turning into an injection, and how you find out something broke at 3am on a Sunday. That's the harness, and that's where I spent my time. I'm going to tell it as what I learned, not as advice, because most of it I only understood by getting it wrong first.
 

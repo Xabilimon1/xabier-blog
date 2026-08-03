@@ -18,9 +18,9 @@ keywords:
   - "Vertex AI"
 ---
 
-Escribí hace un tiempo que lo que me empujó de construir hacia research fue ver la producción romperse por sitios de los que el modelo no tenía ninguna culpa. Esta es la versión larga de esa frase, contada a través de SAM, el agente que monté en Xexterior.
+Escribí hace un tiempo que lo que me empujó de construir hacia research fue ver la producción romperse por sitios de los que el modelo no tenía ninguna culpa. Esta es la versión larga de esa frase, contada a través de SAM, un agente que monté para una empresa industrial española.
 
-Xexterior es una empresa industrial con años de trayectoria que mantiene la parte exterior de más de 2.500 edificios en España. No es el primer sitio donde buscarías un agente en producción, pero es donde monté uno. SAM se sienta encima del Salesforce de la empresa y responde preguntas reales a dos audiencias muy distintas: el equipo comercial, desde dentro de Salesforce, y los operarios de campo, desde una app móvil. El mismo cerebro, dos canales, tráfico real.
+La empresa lleva años en el sector industrial y mantiene la parte exterior de más de 2.500 edificios en España. No es el primer sitio donde buscarías un agente en producción, pero es donde monté uno. SAM se sienta encima del Salesforce de la empresa y responde preguntas reales a dos audiencias muy distintas: el equipo comercial, desde dentro de Salesforce, y los operarios de campo, desde una app móvil. El mismo cerebro, dos canales, tráfico real.
 
 Entré asumiendo que la parte difícil era el modelo de lenguaje. Le haces un buen prompt, eliges el correcto, y el resto es fontanería. Resultó ser casi al revés. En un sistema que toca un CRM con datos reales de clientes, el modelo es quizá una quinta parte del trabajo y casi nada del riesgo. Las otras cuatro quintas partes son cómo enrutas una petición, qué le dejas hacer de verdad al agente, cómo evitas que una llamada a una herramienta se convierta en una inyección, y cómo te enteras de que algo se rompió a las 3 de la mañana de un domingo. Eso es el harness, y ahí es donde metí las horas. Lo voy a contar como lo que aprendí, no como consejos, porque casi todo lo entendí a base de hacerlo mal primero.
 
