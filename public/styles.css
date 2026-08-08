@@ -8,10 +8,10 @@
 html, body { height: 100%; }
 
 body {
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-  font-weight: 300;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 17px;
+  line-height: 1.6;
+  font-weight: 400;
   color: #111;
   background-color: #faf7ef;
   background-image:
@@ -70,9 +70,9 @@ a:visited { color: #205caa; }
 }
 .site-title {
   color: #333;
-  font-size: 26px;
-  font-weight: 300;
-  letter-spacing: -1px;
+  font-size: 27px;
+  font-weight: 500;
+  letter-spacing: normal;
   line-height: 56px;
 }
 .site-title:hover,
@@ -85,7 +85,7 @@ a:visited { color: #205caa; }
 .site-nav a {
   color: #727272;
   font-size: 16px;
-  letter-spacing: -0.5px;
+  letter-spacing: normal;
 }
 .site-nav a:hover { color: #000; text-decoration: underline; }
 .site-nav a:visited { color: #727272; }
@@ -100,8 +100,8 @@ a:visited { color: #205caa; }
 
 /* Home + About lead paragraph */
 .lead {
-  font-size: 16px;
-  line-height: 1.55;
+  font-size: 18px;
+  line-height: 1.65;
   color: #333;
   margin: 20px 0;
 }
@@ -116,25 +116,25 @@ a:visited { color: #205caa; }
   margin-bottom: 2px;
 }
 .post-list .post-link {
-  font-size: 20px;
-  letter-spacing: -1px;
-  line-height: 1.2;
-  font-weight: 300;
+  font-size: 21px;
+  letter-spacing: normal;
+  line-height: 1.25;
+  font-weight: 500;
 }
 .post-list .post-excerpt {
-  font-size: 15px;
+  font-size: 16px;
   color: #666;
   margin-top: 4px;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 /* Post page */
 .post-header { margin: 10px 0 30px; }
 .post-header h1 {
-  font-size: 36px;
-  letter-spacing: -1.75px;
-  line-height: 1.05;
-  font-weight: 300;
+  font-size: 38px;
+  letter-spacing: normal;
+  line-height: 1.12;
+  font-weight: 500;
   color: #111;
 }
 .post-header .meta {
@@ -159,17 +159,17 @@ a:visited { color: #205caa; }
   font-weight: 300;
   margin: 40px 0 20px;
 }
-.post-content h1 { font-size: 32px; letter-spacing: -1px; }
-.post-content h2 { font-size: 26px; letter-spacing: -1px; }
-.post-content h3 { font-size: 22px; letter-spacing: -0.5px; }
-.post-content h4 { font-size: 18px; }
+.post-content h1 { font-size: 32px; letter-spacing: normal; }
+.post-content h2 { font-size: 27px; letter-spacing: normal; }
+.post-content h3 { font-size: 22px; letter-spacing: normal; }
+.post-content h4 { font-size: 19px; }
 
 .post-content p,
 .post-content ul,
 .post-content ol,
 .post-content blockquote {
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 17px;
+  line-height: 1.7;
   color: #222;
 }
 
@@ -187,7 +187,7 @@ a:visited { color: #205caa; }
 /* Inline code */
 .post-content code {
   font-family: Menlo, Monaco, Consolas, monospace;
-  font-size: 14px;
+  font-size: 15px;
   background: #f2f2f2;
   padding: 1px 5px;
   border-radius: 2px;
@@ -197,8 +197,8 @@ a:visited { color: #205caa; }
 .post-content pre,
 .post-content pre.astro-code {
   font-family: Menlo, Monaco, Consolas, monospace;
-  font-size: 13.5px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.55;
   padding: 14px 18px;
   border: 1px solid #e1e4e8;
   border-radius: 4px;
@@ -243,7 +243,7 @@ a:visited { color: #205caa; }
 .post-content table {
   border-collapse: collapse;
   width: 100%;
-  font-size: 15px;
+  font-size: 16px;
 }
 .post-content th, .post-content td {
   border: 1px solid #e8e8e8;
@@ -375,15 +375,15 @@ a:visited { color: #205caa; }
     padding-top: 12px;
     padding-bottom: 12px;
   }
-  .site-title { font-size: 22px; line-height: 1.3; }
+  .site-title { font-size: 24px; line-height: 1.3; }
   .site-nav {
     line-height: 1.9;
     gap: 16px;
     flex-wrap: wrap;
   }
-  .site-nav a { font-size: 15px; }
-  .post-header h1 { font-size: 28px; letter-spacing: -1px; }
-  .post-content h1 { font-size: 26px; }
-  .post-content h2 { font-size: 22px; }
-  .post-content h3 { font-size: 19px; }
+  .site-nav a { font-size: 16px; }
+  .post-header h1 { font-size: 30px; letter-spacing: normal; }
+  .post-content h1 { font-size: 27px; }
+  .post-content h2 { font-size: 23px; }
+  .post-content h3 { font-size: 20px; }
 }
