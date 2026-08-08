@@ -10,6 +10,12 @@ const pillClass = (tag: string): string => {
   if (["vertex ai", "cloud run"].includes(t)) return "pill pill-brown";
   return "pill";
 };
+
+// Clicking the name goes to GitHub when there's a repo; otherwise to the
+// project's primary link (e.g. the writeup). Private projects with no link
+// render as plain text.
+const nameHref = (p: (typeof projects)[number]): string | undefined =>
+  p.links.find((l) => l.label === "GitHub")?.href ?? p.links[0]?.href;
 ---
 
 <section class="projects-section">
@@ -17,14 +23,15 @@ const pillClass = (tag: string): string => {
   <div class="projects">
     {projects.map((p) => (
       <article class="project">
-        {p.image ? (
-          <div class="project-cover"><img src={p.image} alt={`${p.name} preview`} /></div>
-        ) : (
-          <div class="project-cover project-cover--mono"><span>{p.name}</span></div>
-        )}
         <div class="project-body">
           <div class="project-head">
-            <h3 class="project-name">{p.name}</h3>
+            {nameHref(p) ? (
+              <h3 class="project-name">
+                <a href={nameHref(p)} rel={nameHref(p)!.startsWith("http") ? "noopener" : undefined}>{p.name}</a>
+              </h3>
+            ) : (
+              <h3 class="project-name">{p.name}</h3>
+            )}
             <span class={`badge badge-${p.status}`}>
               {p.status === "open" ? "open source" : "closed source"}
             </span>
