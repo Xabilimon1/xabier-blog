@@ -1,0 +1,51 @@
+---
+import { projects } from "../lib/projects";
+
+const pillClass = (tag: string): string => {
+  const t = tag.toLowerCase();
+  if (["fastapi", "python", "supabase"].includes(t)) return "pill pill-green";
+  if (["salesforce", "react", "typescript", "msal"].includes(t)) return "pill pill-blue";
+  if (["tauri"].includes(t)) return "pill pill-rust";
+  if (["claude code"].includes(t)) return "pill pill-violet";
+  if (["vertex ai", "cloud run"].includes(t)) return "pill pill-brown";
+  return "pill";
+};
+---
+
+<section class="projects-section">
+  <h2 class="section-heading">Projects</h2>
+  <div class="projects">
+    {projects.map((p) => (
+      <article class="project">
+        {p.image ? (
+          <div class="project-cover"><img src={p.image} alt={`${p.name} preview`} /></div>
+        ) : (
+          <div class="project-cover project-cover--mono"><span>{p.name}</span></div>
+        )}
+        <div class="project-body">
+          <div class="project-head">
+            <h3 class="project-name">{p.name}</h3>
+            <span class={`badge badge-${p.status}`}>
+              {p.status === "open" ? "open source" : "closed source"}
+            </span>
+          </div>
+          <p class="project-blurb">{p.blurb}</p>
+          <div class="pills">
+            {p.tags.map((t) => <span class={pillClass(t)}>{t}</span>)}
+          </div>
+          {p.links.length > 0 && (
+            <div class="project-actions">
+              {p.links.map((l) => (
+                <a
+                  class="proj-btn"
+                  href={l.href}
+                  rel={l.href.startsWith("http") ? "noopener" : undefined}
+                >{l.label} →</a>
+              ))}
+            </div>
+          )}
+        </div>
+      </article>
+    ))}
+  </div>
+</section>

@@ -1,10 +1,14 @@
 ---
 export const prerender = true;
 import Layout from "../layouts/Layout.astro";
+import Projects from "../components/Projects.astro";
 import { getCollection } from "astro:content";
 
 const all = (await getCollection("posts", ({ data }) => !data.draft && data.lang === "es"))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+
+const featured = all[0];
+const rest = all.slice(1);
 
 const dateFmt = (d: Date) =>
   new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(d);
@@ -26,21 +30,38 @@ const dateFmt = (d: Date) =>
     my first empirical paper. See <a href="/about">about</a> for the long version.
   </p>
 
-  <h2 style="font-size:22px; font-weight:500; letter-spacing:normal; margin:36px 0 12px;">Posts</h2>
+  {featured && (
+    <div class="featured">
+      <p class="kicker">Latest from the blog</p>
+      <h2 class="featured-title">
+        <a href={`/posts/${featured.id}`}>{featured.data.title}</a>
+        <span class="featured-date">{dateFmt(featured.data.publishedAt)}</span>
+      </h2>
+      <p class="featured-excerpt">{featured.data.excerpt}</p>
+      <a class="read-more" href={`/posts/${featured.id}`}>Read post →</a>
+    </div>
+  )}
 
-  {all.length === 0 ? (
+  <Projects />
+
+  {rest.length > 0 && (
+    <>
+      <h2 class="section-heading">More writing</h2>
+      <ul class="post-list">
+        {rest.map((post) => (
+          <li>
+            <span class="post-date">{dateFmt(post.data.publishedAt)}</span>
+            <a class="post-link" href={`/posts/${post.id}`}>{post.data.title}</a>
+            <p class="post-excerpt">{post.data.excerpt}</p>
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+
+  {all.length === 0 && (
     <p style="color:#818181; font-size:15px;">
       First post is in the oven. Subscribe via <a href="/rss.xml">RSS</a>.
     </p>
-  ) : (
-    <ul class="post-list">
-      {all.map((post) => (
-        <li>
-          <span class="post-date">{dateFmt(post.data.publishedAt)}</span>
-          <a class="post-link" href={`/posts/${post.id}`}>{post.data.title}</a>
-          <p class="post-excerpt">{post.data.excerpt}</p>
-        </li>
-      ))}
-    </ul>
   )}
 </Layout>
