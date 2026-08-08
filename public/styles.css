@@ -13,7 +13,11 @@ body {
   line-height: 1.5;
   font-weight: 300;
   color: #111;
-  background-color: #fdfdfd;
+  background-color: #faf7ef;
+  background-image:
+    linear-gradient(#e9e2d3 1px, transparent 1px),
+    linear-gradient(90deg, #e9e2d3 1px, transparent 1px);
+  background-size: 26px 26px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -55,7 +59,7 @@ a:visited { color: #205caa; }
   border-top: 5px solid #333;
   border-bottom: 1px solid #e8e8e8;
   min-height: 56px;
-  background: #fff;
+  background: transparent;
 }
 .site-header .wrap {
   display: flex;
@@ -90,7 +94,7 @@ a:visited { color: #205caa; }
 /* Content */
 .page-content {
   padding: 30px 0;
-  background: #fff;
+  background: transparent;
   min-height: calc(100vh - 62px);
 }
 
