@@ -56,7 +56,7 @@ The blog index, home "Latest Posts" and RSS feed all filter by `lang === "es"` s
 Pick one. Drives the chip filter on `/blog` and the badge color on every card.
 
 - `tech` — rigorous technical deep-dive
-- `research` — work in progress on the harness-ablation paper
+- `research` — evals, agent harnesses, and current research work
 - `production` — case study from a shipped system
 - `meta` — journey, reflections, self-critique
 
