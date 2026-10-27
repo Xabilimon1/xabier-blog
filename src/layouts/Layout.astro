@@ -1,5 +1,6 @@
 ---
 import JsonLd from "../components/JsonLd.astro";
+import Backdrop from "../components/Backdrop.astro";
 import Analytics from "@vercel/analytics/astro";
 import SpeedInsights from "@vercel/speed-insights/astro";
 import {
@@ -179,6 +180,7 @@ const navLinks: Array<{ href: string; label: string; key: Props["current"] }> = 
   <JsonLd data={combinedJsonLd} />
 </head>
 <body>
+  <Backdrop />
   <a class="skip" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="wrap">

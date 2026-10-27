@@ -64,6 +64,16 @@ a:hover { color: var(--red); text-decoration-color: var(--red); }
 
 :focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
 
+/* The gearbox drawn behind the page (components/Backdrop.astro) */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
 .skip {
   position: absolute;
   left: 12px;
