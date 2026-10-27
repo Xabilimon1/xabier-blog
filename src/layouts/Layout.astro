@@ -171,14 +171,21 @@ const navLinks: Array<{ href: string; label: string; key: Props["current"] }> = 
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
 
-  <link rel="stylesheet" href="/styles.css?v=11" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martian+Mono:wdth,wght@75..112.5,300..800&display=swap" />
+  <link rel="stylesheet" href="/styles.css?v=12" />
 
   <JsonLd data={combinedJsonLd} />
 </head>
 <body>
+  <a class="skip" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="wrap">
-      <a class="site-title" href="/">{SITE_NAME}</a>
+      <a class="site-title" href="/">
+        <span class="site-name">{SITE_NAME}</span>
+        <span class="site-subject">// AI, taken apart</span>
+      </a>
       <nav class="site-nav" aria-label="Primary">
         {navLinks.map((l) => (
           <a
@@ -190,7 +197,7 @@ const navLinks: Array<{ href: string; label: string; key: Props["current"] }> = 
     </div>
   </header>
 
-  <main class="page-content">
+  <main class="page-content" id="main">
     <div class="wrap">
       <slot />
     </div>
@@ -198,12 +205,11 @@ const navLinks: Array<{ href: string; label: string; key: Props["current"] }> = 
 
   <footer class="site-footer">
     <div class="wrap">
-      <div>© 2026 {SITE_NAME}</div>
-      <div>
+      <p>© 2026 {SITE_NAME}. Drawn on graph paper in Madrid.</p>
+      <p class="footer-links">
         <a href="/rss.xml">RSS</a>
-        &nbsp;·&nbsp;
         <a href="https://github.com/Xabilimon1" rel="noopener me">GitHub</a>
-      </div>
+      </p>
     </div>
   </footer>
 

@@ -1,58 +1,99 @@
 ---
 import { projects } from "../lib/projects";
 
-const pillClass = (tag: string): string => {
-  const t = tag.toLowerCase();
-  if (["fastapi", "python", "supabase"].includes(t)) return "pill pill-green";
-  if (["salesforce", "react", "typescript", "msal"].includes(t)) return "pill pill-blue";
-  if (["tauri"].includes(t)) return "pill pill-rust";
-  if (["claude code"].includes(t)) return "pill pill-violet";
-  if (["vertex ai", "cloud run"].includes(t)) return "pill pill-brown";
-  return "pill";
-};
-
-// Clicking the name goes to GitHub when there's a repo; otherwise to the
-// project's primary link (e.g. the writeup). Private projects with no link
-// render as plain text.
-const nameHref = (p: (typeof projects)[number]): string | undefined =>
-  p.links.find((l) => l.label === "GitHub")?.href ?? p.links[0]?.href;
+const num = (i: number) => String(i + 1).padStart(2, "0");
+const external = (href: string) => href.startsWith("http");
+const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
 ---
 
-<section class="projects-section">
-  <h2 class="section-heading">Projects</h2>
-  <div class="projects">
-    {projects.map((p) => (
-      <article class="project">
-        <div class="project-body">
-          <div class="project-head">
-            {nameHref(p) ? (
-              <h3 class="project-name">
-                <a href={nameHref(p)} rel={nameHref(p)!.startsWith("http") ? "noopener" : undefined}>{p.name}</a>
-              </h3>
-            ) : (
-              <h3 class="project-name">{p.name}</h3>
-            )}
-            <span class={`badge badge-${p.status}`}>
-              {p.status === "open" ? "open source" : "closed source"}
-            </span>
-          </div>
-          <p class="project-blurb">{p.blurb}</p>
-          <div class="pills">
-            {p.tags.map((t) => <span class={pillClass(t)}>{t}</span>)}
-          </div>
-          {p.links.length > 0 && (
-            <div class="project-actions">
-              {p.links.map((l) => (
-                <a
-                  class="proj-btn"
-                  href={l.href}
-                  rel={l.href.startsWith("http") ? "noopener" : undefined}
-                >{l.label} →</a>
-              ))}
-            </div>
-          )}
-        </div>
-      </article>
+<section class="teardowns" id="teardowns" aria-labelledby="teardowns-title">
+  <header class="section-head">
+    <h2 class="section-title" id="teardowns-title">Teardowns</h2>
+    <p class="section-count">{projects.length} records</p>
+  </header>
+  <p class="section-lead">Things I built or took apart: what's inside, and where they broke.</p>
+
+  <ol class="index" aria-label="Index of teardowns">
+    {projects.map((p, i) => (
+      <li>
+        <a class="index-row" href={`#${p.slug}`}>
+          <span class="balloon" aria-hidden="true">{i + 1}</span>
+          <span class="index-name">{p.name}</span>
+          <span class="index-sub">{p.subtitle}</span>
+          <span class="index-leader" aria-hidden="true"></span>
+          <span class="index-status">{p.status}</span>
+        </a>
+      </li>
     ))}
-  </div>
+  </ol>
+
+  {projects.map((p, i) => (
+    <article class="teardown" id={p.slug} aria-labelledby={`${p.slug}-name`}>
+      <header class="teardown-head">
+        <span class="balloon balloon-lg" aria-hidden="true">{i + 1}</span>
+        <div>
+          <p class="teardown-ref">Teardown {num(i)}</p>
+          <h3 class="teardown-name" id={`${p.slug}-name`}>{p.name}</h3>
+          <p class="teardown-sub">{p.subtitle}</p>
+        </div>
+        <p class="teardown-status">{p.status === "open" ? "Open source" : "Closed source"}</p>
+      </header>
+
+      <div class="teardown-body">
+        <figure class="fig">
+          <div class="fig-frame">
+            {p.media ? (
+              isVideo(p.media) ? (
+                <video src={p.media} autoplay muted loop playsinline aria-label={`${p.name} demo`}></video>
+              ) : (
+                <img src={p.media} alt={`${p.name} demo`} loading="lazy" width="1280" height="800" />
+              )
+            ) : (
+              <svg class="fig-empty" viewBox="0 0 160 100" preserveAspectRatio="none" aria-hidden="true">
+                <line x1="0" y1="0" x2="160" y2="100" />
+                <line x1="160" y1="0" x2="0" y2="100" />
+              </svg>
+            )}
+          </div>
+          <figcaption>
+            <span class="fig-no">Fig. {num(i)}</span>
+            {p.media ? `${p.name}, recorded demo` : "Demo GIF pending"}
+          </figcaption>
+        </figure>
+
+        <div class="teardown-text">
+          <p class="teardown-blurb">{p.blurb}</p>
+          <dl class="spec">
+            <dt>Parts</dt>
+            <dd>{p.parts.join(", ")}</dd>
+            {p.brokeAt && (
+              <>
+                <dt class="broke">Where it broke</dt>
+                <dd class="broke">{p.brokeAt}</dd>
+              </>
+            )}
+            <dt>Source</dt>
+            <dd>
+              {p.links.length > 0 ? (
+                <span class="spec-links">
+                  {p.links.map((l) => (
+                    <a href={l.href} rel={external(l.href) ? "noopener" : undefined}>
+                      {l.label} {external(l.href) ? "↗" : "→"}
+                    </a>
+                  ))}
+                </span>
+              ) : p.status === "closed" ? (
+                "Closed. Demo on request."
+              ) : (
+                "[pending]"
+              )}
+              {p.links.length > 0 && p.status === "closed" && (
+                <span class="spec-note">Code is closed. Demo on request.</span>
+              )}
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </article>
+  ))}
 </section>

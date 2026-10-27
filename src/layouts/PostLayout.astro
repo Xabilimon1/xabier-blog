@@ -3,6 +3,7 @@ import Layout from "./Layout.astro";
 import Comments from "../components/Comments.astro";
 import { getCollection } from "astro:content";
 import { SITE, SITE_NAME, AUTHOR } from "../lib/site";
+import { categoryLabel, isoDate } from "../lib/format";
 
 interface Props {
   title: string;
@@ -34,13 +35,8 @@ const {
   slug,
 } = Astro.props;
 
-const dateLocale = lang === "es" ? "es-ES" : "en-GB";
-const dateFmt = new Intl.DateTimeFormat(dateLocale, {
-  day: "2-digit", month: "short", year: "numeric",
-}).format(publishedAt);
-const updatedFmt = updatedAt
-  ? new Intl.DateTimeFormat(dateLocale, { day: "2-digit", month: "short", year: "numeric" }).format(updatedAt)
-  : null;
+const dateFmt = isoDate(publishedAt);
+const updatedFmt = updatedAt ? isoDate(updatedAt) : null;
 
 const readLabel = lang === "es" ? "min de lectura" : "min read";
 const footLabel = lang === "es"
@@ -108,9 +104,7 @@ const relatedPool = await getCollection(
 const relatedPosts = relatedPool
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
   .slice(0, 3);
-const relatedFmt = new Intl.DateTimeFormat(dateLocale, {
-  day: "2-digit", month: "short", year: "numeric",
-});
+
 const relatedHeading = lang === "es" ? "Más lectura" : "More reading";
 ---
 
@@ -130,20 +124,18 @@ const relatedHeading = lang === "es" ? "Más lectura" : "More reading";
   jsonLd={[blogPosting, breadcrumb]}
 >
 
-  <article>
+  <article class="post">
     <header class="post-header">
+      <p class="post-kicker">{categoryLabel(category, lang)}</p>
       <h1>{title}</h1>
       <p class="meta">
         <time datetime={publishedAt.toISOString()}>{dateFmt}</time>
-        &nbsp;·&nbsp; {readingMinutes} {readLabel}
+        <span>{readingMinutes} {readLabel}</span>
         {updatedFmt && (
-          <>&nbsp;·&nbsp; {updatedLabel} <time datetime={updatedAt!.toISOString()}>{updatedFmt}</time></>
+          <span>{updatedLabel} <time datetime={updatedAt!.toISOString()}>{updatedFmt}</time></span>
         )}
         {translationOf && (
-          <span class="lang-toggle">
-            <span class="sep">·</span>
-            <a href={`/posts/${translationOf}`}>{otherLangLabel}</a>
-          </span>
+          <a class="lang-toggle" href={`/posts/${translationOf}`} hreflang={otherLang}>{otherLangLabel}</a>
         )}
       </p>
     </header>
@@ -163,7 +155,7 @@ const relatedHeading = lang === "es" ? "Más lectura" : "More reading";
       <ul class="related-list">
         {relatedPosts.map((post) => (
           <li>
-            <span class="date">{relatedFmt.format(post.data.publishedAt)}</span>
+            <span class="date">{isoDate(post.data.publishedAt)}</span>
             <a href={`/posts/${post.id}`}>{post.data.title}</a>
           </li>
         ))}
