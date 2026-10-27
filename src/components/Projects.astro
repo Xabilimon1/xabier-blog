@@ -10,68 +10,91 @@ const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
     <h2 class="section-title" id="teardowns-title">Teardowns</h2>
   </header>
 
-  <ol class="index" aria-label="Index of teardowns">
-    {projects.map((p, i) => (
-      <li>
-        <a class="index-row" href={`#${p.slug}`}>
-          <span class="balloon" aria-hidden="true">{i + 1}</span>
-          <span class="index-name">{p.name}</span>
-          <span class="index-leader" aria-hidden="true"></span>
-          <span class="index-status">{p.status}</span>
-        </a>
-      </li>
-    ))}
-  </ol>
+  <div class="teardowns-grid">
+    <nav class="index" aria-label="Index of teardowns">
+      <p class="index-head"><span>Index</span><span>{projects.length}</span></p>
+      <ol>
+        {projects.map((p, i) => (
+          <li>
+            <a class="index-row" href={`#${p.slug}`} data-slug={p.slug}>
+              <span class="balloon" aria-hidden="true">{i + 1}</span>
+              <span class="index-name">{p.name}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
 
-  {projects.map((p, i) => (
-    <article class="teardown" id={p.slug} aria-labelledby={`${p.slug}-name`}>
-      <header class="teardown-head">
-        <span class="balloon balloon-lg" aria-hidden="true">{i + 1}</span>
-        <h3 class="teardown-name" id={`${p.slug}-name`}>{p.name}</h3>
-        <p class="teardown-status">{p.status}</p>
-      </header>
+    <div class="records">
+      {projects.map((p, i) => (
+        <article class="teardown" id={p.slug} aria-labelledby={`${p.slug}-name`}>
+          <header class="teardown-head">
+            <span class="balloon" aria-hidden="true">{i + 1}</span>
+            <h3 class="teardown-name" id={`${p.slug}-name`}>{p.name}</h3>
+            <p class="teardown-status">{p.status === "open" ? "Open source" : "Closed source"}</p>
+          </header>
 
-      <div class="teardown-body">
-        <figure class="fig">
-          <div class="fig-frame">
-            {p.media ? (
-              isVideo(p.media) ? (
-                <video src={p.media} autoplay muted loop playsinline aria-label={`${p.name} demo`}></video>
-              ) : (
-                <img src={p.media} alt={`${p.name} demo`} loading="lazy" width="1280" height="800" />
-              )
-            ) : (
-              <svg class="fig-empty" viewBox="0 0 160 100" preserveAspectRatio="none" aria-hidden="true">
-                <line x1="0" y1="0" x2="160" y2="100" />
-                <line x1="160" y1="0" x2="0" y2="100" />
-              </svg>
-            )}
+          <div class="teardown-body">
+            <figure class="fig">
+              <div class="fig-frame">
+                {p.media ? (
+                  isVideo(p.media) ? (
+                    <video src={p.media} autoplay muted loop playsinline aria-label={`${p.name} demo`}></video>
+                  ) : (
+                    <img src={p.media} alt={`${p.name} demo`} loading="lazy" width="1280" height="800" />
+                  )
+                ) : (
+                  <svg class="fig-empty" viewBox="0 0 160 100" preserveAspectRatio="none" aria-hidden="true">
+                    <line x1="0" y1="0" x2="160" y2="100" />
+                    <line x1="160" y1="0" x2="0" y2="100" />
+                  </svg>
+                )}
+              </div>
+            </figure>
+
+            <div class="teardown-text">
+              <p class="teardown-blurb">{p.blurb}</p>
+              <dl class="spec">
+                <dt>Parts</dt>
+                <dd>{p.parts.join(", ")}</dd>
+                {p.brokeAt && (
+                  <>
+                    <dt class="broke">Where it broke</dt>
+                    <dd class="broke">{p.brokeAt}</dd>
+                  </>
+                )}
+              </dl>
+              {p.links.length > 0 && (
+                <p class="spec-links">
+                  {p.links.map((l) => (
+                    <a class="btn btn-small" href={l.href} rel={external(l.href) ? "noopener" : undefined}>
+                      {l.label} {external(l.href) ? "↗" : "→"}
+                    </a>
+                  ))}
+                </p>
+              )}
+            </div>
           </div>
-        </figure>
-
-        <div class="teardown-text">
-          <p class="teardown-blurb">{p.blurb}</p>
-          <dl class="spec">
-            <dt>Parts</dt>
-            <dd>{p.parts.join(", ")}</dd>
-            {p.brokeAt && (
-              <>
-                <dt class="broke">Where it broke</dt>
-                <dd class="broke">{p.brokeAt}</dd>
-              </>
-            )}
-          </dl>
-          {p.links.length > 0 && (
-            <p class="spec-links">
-              {p.links.map((l) => (
-                <a href={l.href} rel={external(l.href) ? "noopener" : undefined}>
-                  {l.label} {external(l.href) ? "↗" : "→"}
-                </a>
-              ))}
-            </p>
-          )}
-        </div>
-      </div>
-    </article>
-  ))}
+        </article>
+      ))}
+    </div>
+  </div>
 </section>
+
+<script>
+  // Mark the index entry of the record being read, as the index on thavlik.dev does.
+  const links = new Map(
+    [...document.querySelectorAll<HTMLAnchorElement>(".index-row")].map((a) => [a.dataset.slug, a]),
+  );
+  const seen = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        for (const a of links.values()) a.removeAttribute("aria-current");
+        links.get(e.target.id)?.setAttribute("aria-current", "true");
+      }
+    },
+    { rootMargin: "-40% 0px -55% 0px" },
+  );
+  document.querySelectorAll(".teardown").forEach((el) => seen.observe(el));
+</script>

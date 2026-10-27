@@ -2,7 +2,6 @@
 export const prerender = true;
 import Layout from "../layouts/Layout.astro";
 import Projects from "../components/Projects.astro";
-import ExplodedAgent from "../components/ExplodedAgent.astro";
 import { getCollection } from "astro:content";
 import { AUTHOR } from "../lib/site";
 import { isoDate } from "../lib/format";
@@ -22,6 +21,7 @@ const [domainName, ...domainTail] = emailDomain.split(".");
   description="Xabier Ariznabarreta, AI engineering student in Madrid. I take AI systems apart to see how they work and where they break: agent harnesses, evals, and the insides of models."
   current="home"
   lang="en"
+  wide
 >
   <section class="hero">
     <div class="hero-text">
@@ -37,10 +37,11 @@ const [domainName, ...domainTail] = emailDomain.split(".");
         <a class="btn btn-quiet" href="/blog">Read the blog →</a>
       </p>
     </div>
-    <ExplodedAgent />
   </section>
 
-  <section class="title-block" aria-label="Profile">
+  <div class="overview">
+  <section class="title-block" aria-labelledby="profile-title">
+    <p class="tab" id="profile-title">Profile</p>
     <dl>
       <div><dt>Drawn by</dt><dd>Xabier Ariznabarreta</dd></div>
       <div><dt>School</dt><dd>AI Engineering, year 3, Universidad Francisco de Vitoria</dd></div>
@@ -77,6 +78,7 @@ const [domainName, ...domainTail] = emailDomain.split(".");
       <p class="latest-excerpt">{featured.data.excerpt}</p>
     </section>
   )}
+  </div>
 
   <Projects />
 
