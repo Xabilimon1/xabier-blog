@@ -3,7 +3,7 @@
 // part of the harness the ablation study removes one at a time, plus the model.
 // Drawn bottom slab first so each slab above hides the one below it.
 const parts = [
-  { label: "prompt structure", note: "where SAM broke" },
+  { label: "prompt structure" },
   { label: "tool selection" },
   { label: "retry policy" },
   { label: "context management" },
@@ -50,6 +50,6 @@ const ys = parts.map((_, i) => top + i * gap);
   </svg>
   <figcaption>
     <span class="fig-no">Fig. 00</span>
-    An LLM agent, exploded: the harness parts my ablation study removes one at a time, and the model under them.
+    An LLM agent, exploded.
   </figcaption>
 </figure>

@@ -1,7 +1,6 @@
 ---
 import { projects } from "../lib/projects";
 
-const num = (i: number) => String(i + 1).padStart(2, "0");
 const external = (href: string) => href.startsWith("http");
 const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
 ---
@@ -9,9 +8,7 @@ const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
 <section class="teardowns" id="teardowns" aria-labelledby="teardowns-title">
   <header class="section-head">
     <h2 class="section-title" id="teardowns-title">Teardowns</h2>
-    <p class="section-count">{projects.length} records</p>
   </header>
-  <p class="section-lead">Things I built or took apart: what's inside, and where they broke.</p>
 
   <ol class="index" aria-label="Index of teardowns">
     {projects.map((p, i) => (
@@ -19,7 +16,6 @@ const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
         <a class="index-row" href={`#${p.slug}`}>
           <span class="balloon" aria-hidden="true">{i + 1}</span>
           <span class="index-name">{p.name}</span>
-          <span class="index-sub">{p.subtitle}</span>
           <span class="index-leader" aria-hidden="true"></span>
           <span class="index-status">{p.status}</span>
         </a>
@@ -31,12 +27,8 @@ const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
     <article class="teardown" id={p.slug} aria-labelledby={`${p.slug}-name`}>
       <header class="teardown-head">
         <span class="balloon balloon-lg" aria-hidden="true">{i + 1}</span>
-        <div>
-          <p class="teardown-ref">Teardown {num(i)}</p>
-          <h3 class="teardown-name" id={`${p.slug}-name`}>{p.name}</h3>
-          <p class="teardown-sub">{p.subtitle}</p>
-        </div>
-        <p class="teardown-status">{p.status === "open" ? "Open source" : "Closed source"}</p>
+        <h3 class="teardown-name" id={`${p.slug}-name`}>{p.name}</h3>
+        <p class="teardown-status">{p.status}</p>
       </header>
 
       <div class="teardown-body">
@@ -55,10 +47,6 @@ const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
               </svg>
             )}
           </div>
-          <figcaption>
-            <span class="fig-no">Fig. {num(i)}</span>
-            {p.media ? `${p.name}, recorded demo` : "Demo GIF pending"}
-          </figcaption>
         </figure>
 
         <div class="teardown-text">
@@ -72,26 +60,16 @@ const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
                 <dd class="broke">{p.brokeAt}</dd>
               </>
             )}
-            <dt>Source</dt>
-            <dd>
-              {p.links.length > 0 ? (
-                <span class="spec-links">
-                  {p.links.map((l) => (
-                    <a href={l.href} rel={external(l.href) ? "noopener" : undefined}>
-                      {l.label} {external(l.href) ? "↗" : "→"}
-                    </a>
-                  ))}
-                </span>
-              ) : p.status === "closed" ? (
-                "Closed. Demo on request."
-              ) : (
-                "[pending]"
-              )}
-              {p.links.length > 0 && p.status === "closed" && (
-                <span class="spec-note">Code is closed. Demo on request.</span>
-              )}
-            </dd>
           </dl>
+          {p.links.length > 0 && (
+            <p class="spec-links">
+              {p.links.map((l) => (
+                <a href={l.href} rel={external(l.href) ? "noopener" : undefined}>
+                  {l.label} {external(l.href) ? "↗" : "→"}
+                </a>
+              ))}
+            </p>
+          )}
         </div>
       </div>
     </article>

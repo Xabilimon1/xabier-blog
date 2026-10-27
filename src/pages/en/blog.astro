@@ -2,7 +2,7 @@
 export const prerender = true;
 import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
-import { categoryLabel, isoDate } from "../../lib/format";
+import { isoDate } from "../../lib/format";
 
 const all = (await getCollection("posts", ({ data }) => !data.draft && data.lang === "en"))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
@@ -67,7 +67,6 @@ const blogJsonLd = [
         <li>
           <time datetime={post.data.publishedAt.toISOString()}>{isoDate(post.data.publishedAt)}</time>
           <div>
-            <p class="log-kicker">{categoryLabel(post.data.category, "en")}</p>
             <a class="log-title" href={`/posts/${post.id}`}>{post.data.title}</a>
             <p class="log-excerpt">{post.data.excerpt}</p>
           </div>
