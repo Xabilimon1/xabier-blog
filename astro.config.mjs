@@ -14,7 +14,7 @@ export default defineConfig({
     // Light syntax highlighting to match the Karpathy-flat aesthetic.
     // github-light: white bg, colored keywords, italic gray comments.
     shikiConfig: {
-      theme: 'github-light',
+      theme: 'dark-plus',
       wrap: false, // long lines scroll horizontally instead of wrapping
     },
   },

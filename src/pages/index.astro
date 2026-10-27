@@ -31,7 +31,7 @@ const [domainName, ...domainTail] = emailDomain.split(".");
         systems apart to see how they work and where they break: agent
         harnesses, evals, and the insides of models.
       </p>
-      <p class="margin-note">It started with Minecraft mods. Now it's language models.</p>
+      <p class="code-comment">// It started with Minecraft mods. Now it's language models.</p>
       <p class="hero-actions">
         <a class="btn btn-primary" href="#teardowns">See the teardowns ↓</a>
         <a class="btn btn-quiet" href="/blog">Read the blog →</a>
@@ -40,9 +40,10 @@ const [domainName, ...domainTail] = emailDomain.split(".");
   </section>
 
   <div class="overview">
-  <section class="title-block" aria-labelledby="profile-title">
-    <p class="tab" id="profile-title">Profile</p>
+  <section class="panel title-block" aria-labelledby="profile-title">
+    <p class="tabbar"><span class="tab" id="profile-title">Profile</span></p>
     <ul class="rows">
+      <li class="row row-head" aria-hidden="true"><span>Name</span><span>Value</span><span></span></li>
       <li class="row">
         <span class="row-label">Drawn by</span>
         <a class="row-value" href="/about">Xabier Ariznabarreta</a>
@@ -71,8 +72,9 @@ const [domainName, ...domainTail] = emailDomain.split(".");
   </section>
 
   {featured && (
-    <section class="latest" aria-labelledby="latest-title">
-      <p class="tab">Latest note</p>
+    <section class="panel latest" aria-labelledby="latest-title">
+      <p class="tabbar"><span class="tab">Latest note</span></p>
+      <div class="panel-body">
       <p class="meta">
         <time datetime={featured.data.publishedAt.toISOString()}>{isoDate(featured.data.publishedAt)}</time>
         <span>{featured.data.readingMinutes} min read</span>
@@ -81,6 +83,7 @@ const [domainName, ...domainTail] = emailDomain.split(".");
         <a href={`/posts/${featured.id}`}>{featured.data.title}</a>
       </h2>
       <p class="latest-excerpt">{featured.data.excerpt}</p>
+      </div>
     </section>
   )}
   </div>

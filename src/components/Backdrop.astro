@@ -73,7 +73,7 @@ const { strong = false } = Astro.props;
   const canvas = document.querySelector<HTMLCanvasElement>("canvas.backdrop")!;
   const ctx = canvas.getContext("2d")!;
   const css = getComputedStyle(document.documentElement);
-  const ink = css.getPropertyValue("--ink-3").trim() || "#6b6559";
+  const ink = css.getPropertyValue("--backdrop").trim() || "#7f7f7f";
   const font = css.getPropertyValue("--font").trim();
   const strong = canvas.dataset.strong === "true";
   const still = matchMedia("(prefers-reduced-motion: reduce)");

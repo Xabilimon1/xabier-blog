@@ -3,6 +3,8 @@ import { projects } from "../lib/projects";
 
 const external = (href: string) => href.startsWith("http");
 const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
+// Index offsets in the hex-editor style: 0x01, 0x02...
+const hex = (i: number) => `0x${(i + 1).toString(16).toUpperCase().padStart(2, "0")}`;
 ---
 
 <section class="teardowns" id="teardowns" aria-labelledby="teardowns-title">
@@ -11,13 +13,13 @@ const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
   </header>
 
   <div class="teardowns-grid">
-    <nav class="index" aria-label="Index of teardowns">
-      <p class="index-head"><span>Index</span><span>{projects.length}</span></p>
+    <nav class="panel index" aria-label="Index of teardowns">
+      <p class="tabbar"><span class="tab">Index</span><span class="tabbar-note">{projects.length}</span></p>
       <ol>
         {projects.map((p, i) => (
           <li>
             <a class="index-row" href={`#${p.slug}`} data-slug={p.slug}>
-              <span class="balloon" aria-hidden="true">{i + 1}</span>
+              <span class={`chip c${i % 7}`} aria-hidden="true">{hex(i)}</span>
               <span class="index-name">{p.name}</span>
             </a>
           </li>
@@ -27,11 +29,10 @@ const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
 
     <div class="records">
       {projects.map((p, i) => (
-        <article class="teardown" id={p.slug} aria-labelledby={`${p.slug}-name`}>
-          <header class="teardown-head">
-            <span class="balloon" aria-hidden="true">{i + 1}</span>
-            <h3 class="teardown-name" id={`${p.slug}-name`}>{p.name}</h3>
-            <p class="teardown-status">{p.status === "open" ? "Open source" : "Closed source"}</p>
+        <article class="panel teardown" id={p.slug} aria-labelledby={`${p.slug}-name`}>
+          <header class="tabbar">
+            <h3 class="tab" id={`${p.slug}-name`}><span class={`chip c${i % 7}`} aria-hidden="true">{hex(i)}</span>{p.name}</h3>
+            <p class="tabbar-note">{p.status === "open" ? "Open source" : "Closed source"}</p>
           </header>
 
           <div class="teardown-body">
@@ -44,10 +45,7 @@ const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
                     <img src={p.media} alt={`${p.name} demo`} loading="lazy" width="1280" height="800" />
                   )
                 ) : (
-                  <svg class="fig-empty" viewBox="0 0 160 100" preserveAspectRatio="none" aria-hidden="true">
-                    <line x1="0" y1="0" x2="160" y2="100" />
-                    <line x1="160" y1="0" x2="0" y2="100" />
-                  </svg>
+                  <p class="fig-empty">No demo<br />loaded</p>
                 )}
               </div>
             </figure>
