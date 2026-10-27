@@ -33,7 +33,7 @@ const [domainName, ...domainTail] = emailDomain.split(".");
       </p>
       <p class="margin-note">It started with Minecraft mods. Now it's language models.</p>
       <p class="hero-actions">
-        <a class="btn" href="#teardowns">See the teardowns ↓</a>
+        <a class="btn btn-primary" href="#teardowns">See the teardowns ↓</a>
         <a class="btn btn-quiet" href="/blog">Read the blog →</a>
       </p>
     </div>
@@ -42,27 +42,32 @@ const [domainName, ...domainTail] = emailDomain.split(".");
   <div class="overview">
   <section class="title-block" aria-labelledby="profile-title">
     <p class="tab" id="profile-title">Profile</p>
-    <dl>
-      <div><dt>Drawn by</dt><dd>Xabier Ariznabarreta</dd></div>
-      <div><dt>School</dt><dd>AI Engineering, year 3, Universidad Francisco de Vitoria</dd></div>
-      <div>
-        <dt>Email</dt>
-        <dd class="email">
-          <span>{emailUser} [at] {domainName} (dot) {domainTail.join(".")}</span>
-          <button
-            class="copy"
-            type="button"
-            data-user={emailUser}
-            data-domain={emailDomain}
-            aria-label="Copy email address"
-          >Copy</button>
-        </dd>
-      </div>
-      <div>
-        <dt>GitHub</dt>
-        <dd><a href={AUTHOR.github} rel="noopener me">@Xabilimon1 ↗</a></dd>
-      </div>
-    </dl>
+    <ul class="rows">
+      <li class="row">
+        <span class="row-label">Drawn by</span>
+        <a class="row-value" href="/about">Xabier Ariznabarreta</a>
+        <span class="row-actions"><span class="btn-fill" aria-hidden="true">About →</span></span>
+      </li>
+      <li class="row">
+        <span class="row-label">School</span>
+        <a class="row-value" href="https://www.ufv.es" rel="noopener">AI Engineering, year 3, Universidad Francisco de Vitoria</a>
+        <span class="row-actions"><span class="btn-fill" aria-hidden="true">Open ↗</span></span>
+      </li>
+      <li class="row">
+        <span class="row-label">Email</span>
+        <a class="row-value mail" href="/contact" data-user={emailUser} data-domain={emailDomain}>
+          {emailUser} [at] {domainName} (dot) {domainTail.join(".")}
+        </a>
+        <span class="row-actions">
+          <button class="btn-fill copy" type="button" data-user={emailUser} data-domain={emailDomain} aria-label="Copy email address">Copy</button>
+        </span>
+      </li>
+      <li class="row">
+        <span class="row-label">GitHub</span>
+        <a class="row-value" href={AUTHOR.github} rel="noopener me">@Xabilimon1</a>
+        <span class="row-actions"><span class="btn-fill" aria-hidden="true">Open ↗</span></span>
+      </li>
+    </ul>
   </section>
 
   {featured && (
@@ -105,6 +110,10 @@ const [domainName, ...domainTail] = emailDomain.split(".");
 </Layout>
 
 <script>
+  // The address is assembled here, not written in the HTML, to keep it from scrapers.
+  for (const link of document.querySelectorAll<HTMLAnchorElement>("a.mail")) {
+    link.href = `mailto:${link.dataset.user}@${link.dataset.domain}`;
+  }
   for (const button of document.querySelectorAll<HTMLButtonElement>("button.copy")) {
     button.addEventListener("click", async () => {
       const address = `${button.dataset.user}@${button.dataset.domain}`;
