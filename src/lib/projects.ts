@@ -22,6 +22,7 @@ export const projects: Project[] = [
     parts: ["fastapi", "vertex ai", "salesforce", "cloud run"],
     brokeAt: "Instructions were dropped silently on the way to the model; everything still looked fine.",
     links: [{ label: "Read the writeup", href: "/posts/2026-08-03-sam-the-harness-is-the-hard-part" }],
+    media: "/projects/sam.mp4",
   },
   {
     slug: "lince-reservations",
