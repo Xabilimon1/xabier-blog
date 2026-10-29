@@ -48,6 +48,11 @@ PROFILES = {
 
 The request path is deliberately boring: request, adapter, profile resolver, pipeline runner, steps, response. When the business asked for the second, third and fourth agent, each was a new list and a couple of new step implementations, never a change to the runner. The first time I shipped an agent in an afternoon instead of a week, the design paid for itself. The same structure absorbed the two channels too. Sales wants a single synchronous answer; field operators want tokens as they're generated. That entire difference lives in the adapter and one flag on the final step, instead of forking the codebase into a synchronous path and a streaming path.
 
+<figure>
+  <video src="/projects/sam.mp4" width="2560" height="1600" autoplay muted loop playsinline aria-label="Replay of SAM's engine with demo data"></video>
+  <figcaption>A replay of the engine with demo data: two profiles on the same pipeline, one answered whole and one streamed over SSE, and a tool outside the profile's allowlist denied in the audit log.</figcaption>
+</figure>
+
 ## Then it hit me that every tool is a door
 
 This is the part I hadn't anticipated. The moment your agent can act, query the CRM, resolve a contact, pull an opportunity, each of those tools is a door, and the caller walking through it is a model that can be steered into doing things it shouldn't.

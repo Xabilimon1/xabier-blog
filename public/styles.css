@@ -473,7 +473,9 @@ article.post { max-width: 760px; }
 
 .post-content img { max-width: 100%; height: auto; display: block; margin: 24px auto; }
 .post-content figure { margin: 28px 0; }
-.post-content figure img { border: 1px solid var(--window-border); }
+.post-content figure img,
+.post-content figure video { border: 1px solid var(--window-border); }
+.post-content video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; }
 .post-content figcaption { font-size: 13px; color: var(--text-3); margin-top: 10px; }
 
 .post-content hr { border: 0; border-top: 1px solid var(--window-border); margin: 40px 0; }

@@ -48,6 +48,11 @@ PROFILES = {
 
 El camino de una petición es deliberadamente aburrido: petición, adapter, resolutor de perfil, runner del pipeline, pasos, respuesta. Cuando el negocio pidió el segundo, tercer y cuarto agente, cada uno fue una lista nueva y un par de implementaciones de paso nuevas, nunca un cambio en el runner. La primera vez que saqué un agente en una tarde en vez de en una semana, el diseño se pagó solo. La misma estructura absorbió también los dos canales. Comercial quiere una única respuesta síncrona; los operarios quieren los tokens según se generan. Toda esa diferencia vive en el adapter y en un flag del último paso, en vez de partir el código en un camino síncrono y un camino de streaming.
 
+<figure>
+  <video src="/projects/sam.mp4" width="2560" height="1600" autoplay muted loop playsinline aria-label="Reproducción del motor de SAM con datos de demo"></video>
+  <figcaption>Una reproducción del motor con datos de demo: dos perfiles en el mismo pipeline, uno respondido de golpe y otro en streaming por SSE, y una herramienta fuera de la lista del perfil denegada en el log de auditoría.</figcaption>
+</figure>
+
 ## Luego me di cuenta de que cada herramienta es una puerta
 
 Esta es la parte que no había anticipado. En el momento en que tu agente puede actuar, consultar el CRM, resolver un contacto, sacar una oportunidad, cada una de esas herramientas es una puerta, y quien la cruza es un modelo al que se le puede dirigir a hacer cosas que no debería.
