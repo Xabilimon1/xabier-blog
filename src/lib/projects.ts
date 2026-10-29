@@ -8,6 +8,7 @@ export type Project = {
   brokeAt?: string; // "where it broke": only real, verified facts
   links: ProjectLink[];
   media?: string; // GIF / WebP / MP4 in /public/projects; no media = empty figure frame
+  fit?: "contain"; // show the whole media (e.g. terminal text up to the edges) instead of cropping it to 16:10
 };
 
 // Real projects, honest status, client/institution names anonymized by descriptor.
@@ -49,6 +50,8 @@ export const projects: Project[] = [
       "Five tested mods for Claude Code (453 tests), listed in the community mods catalogue.",
     parts: ["claude code", "typescript"],
     links: [{ label: "GitHub", href: "https://github.com/Xabilimon1/emcc-claude-code-mods" }],
+    media: "/projects/emcc.gif",
+    fit: "contain",
   },
   {
     slug: "reeljet",

@@ -40,9 +40,9 @@ const hex = (i: number) => `0x${(i + 1).toString(16).toUpperCase().padStart(2, "
               <div class="fig-frame">
                 {p.media ? (
                   isVideo(p.media) ? (
-                    <video src={p.media} autoplay muted loop playsinline aria-label={`${p.name} demo`}></video>
+                    <video class={p.fit} src={p.media} autoplay muted loop playsinline aria-label={`${p.name} demo`}></video>
                   ) : (
-                    <img src={p.media} alt={`${p.name} demo`} loading="lazy" width="1280" height="800" />
+                    <img class={p.fit} src={p.media} alt={`${p.name} demo`} loading="lazy" width="1280" height="800" />
                   )
                 ) : (
                   <p class="fig-empty">No demo<br />loaded</p>
