@@ -1,8 +1,8 @@
 ---
 import { projects } from "../lib/projects";
+import Cover from "./Cover.astro";
 
 const external = (href: string) => href.startsWith("http");
-const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
 // Index offsets in the hex-editor style: 0x01, 0x02...
 const hex = (i: number) => `0x${(i + 1).toString(16).toUpperCase().padStart(2, "0")}`;
 ---
@@ -37,17 +37,7 @@ const hex = (i: number) => `0x${(i + 1).toString(16).toUpperCase().padStart(2, "
 
           <div class="teardown-body">
             <figure class="fig">
-              <div class="fig-frame">
-                {p.media ? (
-                  isVideo(p.media) ? (
-                    <video class={p.fit} src={p.media} autoplay muted loop playsinline aria-label={`${p.name} demo`}></video>
-                  ) : (
-                    <img class={p.fit} src={p.media} alt={`${p.name} demo`} loading="lazy" width="1280" height="800" />
-                  )
-                ) : (
-                  <p class="fig-empty">No demo<br />loaded</p>
-                )}
-              </div>
+              <Cover project={p} />
             </figure>
 
             <div class="teardown-text">

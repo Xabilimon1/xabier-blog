@@ -373,6 +373,8 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .fig-frame img,
 .fig-frame video { display: block; width: 100%; height: 100%; object-fit: cover; }
 .fig-frame .contain { object-fit: contain; }
+.fig-link { transition: border-color 120ms ease; }
+.fig-link:hover { border-color: var(--accent); }
 /* Like ImHex's "No bytes selected" box */
 .fig-empty {
   border: 1px solid var(--window-border);

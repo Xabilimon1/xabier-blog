@@ -1,0 +1,31 @@
+---
+import type { Project } from "../lib/projects";
+
+interface Props {
+  project: Project;
+}
+const { project: p } = Astro.props;
+
+// Clicking the cover goes where the project lives: GitHub when there is a
+// repo, otherwise its first link (the writeup). No link, no click.
+const href = p.links.find((l) => l.label === "GitHub")?.href ?? p.links[0]?.href;
+const Frame = href ? "a" : "div";
+const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
+---
+
+<Frame
+  class:list={["fig-frame", { "fig-link": href }]}
+  href={href}
+  rel={href?.startsWith("http") ? "noopener" : undefined}
+  aria-label={href ? `Open ${p.name}` : undefined}
+>
+  {p.media ? (
+    isVideo(p.media) ? (
+      <video class={p.fit} src={p.media} autoplay muted loop playsinline aria-label={`${p.name} demo`}></video>
+    ) : (
+      <img class={p.fit} src={p.media} alt={`${p.name} demo`} loading="lazy" width="1280" height="800" />
+    )
+  ) : (
+    <p class="fig-empty">No demo<br />loaded</p>
+  )}
+</Frame>
