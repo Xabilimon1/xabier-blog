@@ -39,6 +39,7 @@ export const projects: Project[] = [
       "Local-first statistics app: the stats engine runs on your machine and your data never leaves it. In development.",
     parts: ["tauri", "python", "typescript"],
     links: [],
+    media: "/projects/numo.gif",
   },
   {
     slug: "emcc",
