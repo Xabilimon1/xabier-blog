@@ -5,7 +5,7 @@ import Cover from "./Cover.astro";
 const external = (href: string) => href.startsWith("http");
 // Offsets in the hex-editor style: 0x01, 0x02...
 const hex = (i: number) => `0x${(i + 1).toString(16).toUpperCase().padStart(2, "0")}`;
-// The centre pane is named after the file it shows, as ImHex names its views.
+// Each demo is named after its file, as ImHex names its views.
 const fileName = (src?: string) => src?.split("/").pop() ?? "no data";
 ---
 
@@ -14,103 +14,42 @@ const fileName = (src?: string) => src?.split("/").pop() ?? "no data";
     <h2 class="section-title" id="teardowns-title">Teardowns</h2>
   </header>
 
-  <!-- One ImHex window: Pattern Data lists every project, the view shows the
-       chosen one's demo, the Data Inspector reads it out. -->
+  <!-- One ImHex window with its three panes as columns (Pattern Data, view,
+       Data Inspector); every project is a band across all three. -->
   <div class="panel imhex">
-    <div class="ih-pattern">
+    <div class="ih-cols" aria-hidden="true">
       <p class="tabbar"><span class="tab">Pattern Data</span><span class="tabbar-note">{projects.length} entries</span></p>
-      <div class="ih-head" aria-hidden="true"><span>offset</span><span>name</span><span>type</span></div>
-      <div class="ih-rows" role="tablist" aria-orientation="vertical" aria-label="Projects">
-        {projects.map((p, i) => (
-          <button
-            type="button"
-            class="ih-row"
-            role="tab"
-            id={`tab-${p.slug}`}
-            data-slug={p.slug}
-            aria-controls={`view-${p.slug}`}
-            aria-selected={i === 0 ? "true" : "false"}
-            tabindex={i === 0 ? 0 : -1}
-          >
-            <span class={`chip c${i % 7}`}>{hex(i)}</span>
-            <span class="ih-name">{p.name}</span>
-            <span class="ih-type">{p.status}</span>
-          </button>
-        ))}
-      </div>
+      <p class="tabbar"><span class="tab">View</span></p>
+      <p class="tabbar"><span class="tab">Data Inspector</span></p>
     </div>
 
     {projects.map((p, i) => (
-      <div class="ih-detail" role="tabpanel" id={`view-${p.slug}`} aria-labelledby={`tab-${p.slug}`} hidden={i !== 0}>
+      <article class="ih-band" id={p.slug} aria-labelledby={`${p.slug}-name`}>
+        <header class="ih-entry">
+          <span class={`chip c${i % 7}`} aria-hidden="true">{hex(i)}</span>
+          <h3 class="ih-name" id={`${p.slug}-name`}>{p.name}</h3>
+          <span class="ih-type">{p.status === "open" ? "open source" : "closed source"}</span>
+          <span class="ih-file">{fileName(p.media)}</span>
+        </header>
         <div class="ih-view">
-          <p class="tabbar"><span class="tab">{fileName(p.media)}</span><span class="tabbar-note">{hex(i)}</span></p>
-          <div class="ih-view-body">
-            <Cover project={p} />
-            {p.links.length > 0 && (
-              <p class="ih-links">
-                {p.links.map((l) => (
-                  <a class="btn btn-small" href={l.href} rel={external(l.href) ? "noopener" : undefined}>
-                    {l.label} {external(l.href) ? "↗" : "→"}
-                  </a>
-                ))}
-              </p>
-            )}
-          </div>
+          <Cover project={p} />
+          {p.links.length > 0 && (
+            <p class="ih-links">
+              {p.links.map((l) => (
+                <a class="btn btn-small" href={l.href} rel={external(l.href) ? "noopener" : undefined}>
+                  {l.label} {external(l.href) ? "↗" : "→"}
+                </a>
+              ))}
+            </p>
+          )}
         </div>
-        <div class="ih-insp">
-          <p class="tabbar"><span class="tab">Data Inspector</span></p>
-          <dl class="ih-table">
-            <div class="ih-th" aria-hidden="true"><span>Name</span><span>Value</span></div>
-            <div><dt>name</dt><dd class="ih-strong">{p.name}</dd></div>
-            <div><dt>type</dt><dd class="ih-kw">{p.status === "open" ? "open source" : "closed source"}</dd></div>
-            <div><dt>about</dt><dd class="ih-text">{p.blurb}</dd></div>
-            <div><dt>parts</dt><dd class="ih-char">{p.parts.join(", ")}</dd></div>
-            {p.brokeAt && <div class="ih-broke"><dt>broke at</dt><dd>{p.brokeAt}</dd></div>}
-          </dl>
-        </div>
-      </div>
+        <dl class="ih-table">
+          <div class="ih-th" aria-hidden="true"><span>Name</span><span>Value</span></div>
+          <div><dt>about</dt><dd class="ih-text">{p.blurb}</dd></div>
+          <div><dt>parts</dt><dd class="ih-char">{p.parts.join(", ")}</dd></div>
+          {p.brokeAt && <div class="ih-broke"><dt>broke at</dt><dd>{p.brokeAt}</dd></div>}
+        </dl>
+      </article>
     ))}
   </div>
 </section>
-
-<script>
-  const tabs = [...document.querySelectorAll<HTMLButtonElement>(".ih-row")];
-
-  const select = (tab: HTMLButtonElement, focus = false) => {
-    for (const t of tabs) {
-      const on = t === tab;
-      t.setAttribute("aria-selected", String(on));
-      t.tabIndex = on ? 0 : -1;
-      const panel = document.getElementById(t.getAttribute("aria-controls")!)!;
-      panel.hidden = !on;
-      // Only the demo on screen plays.
-      const v = panel.querySelector<HTMLVideoElement>(".fig-frame video");
-      if (v) on ? v.play().catch(() => {}) : v.pause();
-    }
-    if (focus) tab.focus();
-  };
-
-  tabs.forEach((t, i) => {
-    t.addEventListener("click", () => {
-      select(t);
-      history.replaceState(null, "", `#${t.dataset.slug}`);
-    });
-    t.addEventListener("keydown", (e) => {
-      const to = { ArrowDown: i + 1, ArrowUp: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
-      if (to === undefined) return;
-      e.preventDefault();
-      const next = tabs[(to + tabs.length) % tabs.length];
-      select(next, true);
-      history.replaceState(null, "", `#${next.dataset.slug}`);
-    });
-  });
-
-  // Old links point at a project (#lince-reservations): open it and bring the window into view.
-  const fromHash = tabs.find((t) => `#${t.dataset.slug}` === location.hash);
-  if (fromHash) {
-    select(fromHash);
-    document.getElementById("teardowns")!.scrollIntoView();
-  } else {
-    select(tabs[0]);
-  }
-</script>
