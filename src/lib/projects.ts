@@ -31,7 +31,9 @@ export const projects: Project[] = [
     blurb:
       "Study-room booking for a Madrid university, built to its rules: OTP and Microsoft SSO, row-level security, five languages. Pending adoption.",
     parts: ["react", "typescript", "supabase", "msal"],
+    brokeAt: "The insert policy only checked that you were signed in, so any student could book under someone else's email. Fixed in migration 21; the replay shows both.",
     links: [{ label: "Read the writeup", href: "/posts/2026-08-03-building-inside-an-institution" }],
+    media: "/projects/lince.mp4",
   },
   {
     slug: "numo",
