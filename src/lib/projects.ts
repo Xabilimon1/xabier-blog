@@ -55,15 +55,6 @@ export const projects: Project[] = [
     fit: "contain",
   },
   {
-    slug: "reeljet",
-    name: "reeljet",
-    status: "open",
-    blurb:
-      "Turns screen recordings into short video ads, as a Claude Code skill: real captures, generated motion, ffmpeg.",
-    parts: ["claude code", "ffmpeg", "higgsfield"],
-    links: [{ label: "GitHub", href: "https://github.com/Xabilimon1/reeljet" }],
-  },
-  {
     slug: "token-budget-advisor",
     name: "Token Budget Advisor",
     status: "open",
