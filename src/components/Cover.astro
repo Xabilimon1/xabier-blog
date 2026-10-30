@@ -6,26 +6,62 @@ interface Props {
 }
 const { project: p } = Astro.props;
 
-// Clicking the cover goes where the project lives: GitHub when there is a
-// repo, otherwise its first link (the writeup). No link, no click.
-const href = p.links.find((l) => l.label === "GitHub")?.href ?? p.links[0]?.href;
-const Frame = href ? "a" : "div";
+// Clicking the cover enlarges it: at card size the demos can't be read, and
+// some repos are private. The project's links stay in its buttons.
 const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
 ---
 
-<Frame
-  class:list={["fig-frame", { "fig-link": href }]}
-  href={href}
-  rel={href?.startsWith("http") ? "noopener" : undefined}
-  aria-label={href ? `Open ${p.name}` : undefined}
->
-  {p.media ? (
-    isVideo(p.media) ? (
-      <video class={p.fit} src={p.media} autoplay muted loop playsinline aria-label={`${p.name} demo`}></video>
-    ) : (
-      <img class={p.fit} src={p.media} alt={`${p.name} demo`} loading="lazy" width="1280" height="800" />
-    )
-  ) : (
+{p.media ? (
+  <div class="cover-zoom">
+    <button type="button" class="fig-frame fig-link" aria-haspopup="dialog" aria-label={`Enlarge the ${p.name} demo`}>
+      {isVideo(p.media) ? (
+        <video class={p.fit} src={p.media} autoplay muted loop playsinline aria-hidden="true"></video>
+      ) : (
+        <img class={p.fit} src={p.media} alt="" loading="lazy" width="1280" height="800" />
+      )}
+      <span class="fig-hint" aria-hidden="true">click to enlarge</span>
+    </button>
+    <dialog class="lightbox" aria-label={`${p.name} demo`}>
+      <div class="lb-bar">
+        <span class="tab">{p.name}</span>
+        <form method="dialog"><button class="lb-close" aria-label="Close">×</button></form>
+      </div>
+      <div class="lb-scroll">
+        {isVideo(p.media) ? (
+          <video class="lb-media" src={p.media} muted loop playsinline controls preload="none"></video>
+        ) : (
+          <img class="lb-media" src={p.media} alt={`${p.name} demo`} loading="lazy" width="1280" height="800" />
+        )}
+      </div>
+      <p class="lb-hint">Scroll sideways to read it all.</p>
+    </dialog>
+  </div>
+) : (
+  <div class="fig-frame">
     <p class="fig-empty">No demo<br />loaded</p>
-  )}
-</Frame>
+  </div>
+)}
+
+<script>
+  for (const box of document.querySelectorAll<HTMLElement>(".cover-zoom")) {
+    const dialog = box.querySelector("dialog")!;
+    const small = box.querySelector<HTMLVideoElement>(".fig-frame video");
+    const big = box.querySelector<HTMLVideoElement>("dialog video");
+    box.querySelector(".fig-frame")!.addEventListener("click", () => {
+      dialog.showModal();
+      // On a phone the demo is shown wider than the screen: start on its middle.
+      const sc = dialog.querySelector<HTMLElement>(".lb-scroll")!;
+      sc.scrollLeft = (sc.scrollWidth - sc.clientWidth) / 2;
+      if (big) {
+        // Start where the card was, so the scene on screen carries over.
+        const at = small?.currentTime ?? 0;
+        if (big.readyState >= 1) big.currentTime = at;
+        else big.addEventListener("loadedmetadata", () => { big.currentTime = at; }, { once: true });
+        big.play().catch(() => {});
+      }
+    });
+    // A click on the backdrop (the dialog itself, outside its content) closes it.
+    dialog.addEventListener("click", (e) => { if (e.target === dialog) dialog.close(); });
+    dialog.addEventListener("close", () => big?.pause());
+  }
+</script>

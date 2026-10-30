@@ -375,6 +375,37 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .fig-frame .contain { object-fit: contain; }
 .fig-link { transition: border-color 120ms ease; }
 .fig-link:hover { border-color: var(--accent); }
+/* Cover as a button that opens the lightbox */
+button.fig-frame { width: 100%; padding: 0; font: inherit; color: inherit; cursor: zoom-in; position: relative; }
+button.fig-frame:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.fig-hint {
+  position: absolute; right: 8px; bottom: 8px; padding: 2px 8px; font-size: 12px;
+  background: var(--popup); border: 1px solid var(--window-border); color: var(--text-2);
+  opacity: 0; transition: opacity 120ms ease;
+}
+button.fig-frame:hover .fig-hint, button.fig-frame:focus-visible .fig-hint { opacity: 1; }
+@media (hover: none) { .fig-hint { opacity: 1; font-size: 0; } .fig-hint::before { content: "tap to enlarge"; font-size: 12px; } }
+
+/* Lightbox: the demo at a size that can be read */
+html:has(dialog.lightbox[open]) { overflow: hidden; }
+.lightbox {
+  margin: auto; padding: 0; max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px);
+  background: var(--bg); color: var(--text); border: 1px solid var(--window-border);
+}
+.lightbox::backdrop { background: #000000d9; }
+.lb-bar { display: flex; align-items: flex-end; justify-content: space-between; padding: 4px 6px 0; background: var(--panel); border-bottom: 1px solid var(--accent); }
+.lb-bar .tab::after { content: none; } /* the real close button is on the right */
+.lb-close { width: 44px; height: 36px; font: 22px/1 var(--font); color: var(--text-2); background: none; border: 0; cursor: pointer; }
+.lb-close:hover, .lb-close:focus-visible { color: var(--text); background: var(--header-hover); outline: none; }
+.lb-scroll { overflow: auto; max-height: calc(100dvh - 16px - 41px); }
+.lb-media { display: block; width: min(calc(100vw - 18px), calc((100dvh - 60px) * 1.6), 1600px); height: auto; aspect-ratio: 16 / 10; }
+.lb-hint { display: none; }
+@media (max-width: 640px) {
+  /* A 16:10 demo at phone width is still unreadable: show it wide and let it pan. */
+  .lb-media { width: 1000px; }
+  .lb-hint { display: block; font-size: 12px; color: var(--text-3); padding: 6px 10px; border-top: 1px solid var(--border); }
+  .lb-scroll { max-height: calc(100dvh - 16px - 41px - 31px); }
+}
 /* Like ImHex's "No bytes selected" box */
 .fig-empty {
   border: 1px solid var(--window-border);
