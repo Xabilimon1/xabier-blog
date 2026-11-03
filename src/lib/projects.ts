@@ -25,6 +25,16 @@ export const projects: Project[] = [
     media: "/projects/sam.mp4",
   },
   {
+    slug: "hubble",
+    name: "Hubble",
+    status: "open",
+    blurb:
+      "Decompiler for MultiBase Cosmos. Turns compiled .omd modules back into COOL source that recompiles to the same bytes; the format had no public documentation, so it was worked out from the binaries.",
+    parts: ["python", "imhex"],
+    links: [{ label: "GitHub", href: "https://github.com/Xabilimon1/hubble-cosmos" }],
+    media: "/projects/hubble.mp4",
+  },
+  {
     slug: "lince-reservations",
     name: "LinceReservations",
     status: "closed",
