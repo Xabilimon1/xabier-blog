@@ -392,7 +392,9 @@ html:has(dialog.lightbox[open]) { overflow: hidden; }
 .lb-bar .tab::after { content: none; } /* the real close button is on the right */
 .lb-close { width: 44px; height: 36px; font: 22px/1 var(--font); color: var(--text-2); background: none; border: 0; cursor: pointer; }
 .lb-close:hover, .lb-close:focus-visible { color: var(--text); background: var(--header-hover); outline: none; }
-.lb-scroll { overflow: auto; max-height: calc(100dvh - 16px - 41px); }
+.lb-full { margin-left: auto; height: 36px; padding: 0 12px; font: 13px/1 var(--font); color: var(--text-2); background: none; border: 0; cursor: pointer; }
+.lb-full:hover, .lb-full:focus-visible { color: var(--text); background: var(--header-hover); outline: none; }
+.lb-scroll { overflow: auto; max-height: calc(100dvh - 16px - 41px); touch-action: pan-x pan-y pinch-zoom; -webkit-overflow-scrolling: touch; }
 .lb-media { display: block; width: min(calc(100vw - 18px), calc((100dvh - 60px) * 1.6), 1600px); height: auto; aspect-ratio: 16 / 10; }
 .lb-hint { display: none; }
 @media (max-width: 640px) {

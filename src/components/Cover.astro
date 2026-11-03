@@ -24,16 +24,17 @@ const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
     <dialog class="lightbox" aria-label={`${p.name} demo`}>
       <div class="lb-bar">
         <span class="tab">{p.name}</span>
+        {isVideo(p.media) && <button type="button" class="lb-full">full screen</button>}
         <form method="dialog"><button class="lb-close" aria-label="Close">×</button></form>
       </div>
       <div class="lb-scroll">
         {isVideo(p.media) ? (
-          <video class="lb-media" src={p.media} muted loop playsinline controls preload="none"></video>
+          <video class="lb-media" src={p.media} muted loop playsinline preload="none"></video>
         ) : (
           <img class="lb-media" src={p.media} alt={`${p.name} demo`} loading="lazy" width="1280" height="800" />
         )}
       </div>
-      <p class="lb-hint">Scroll sideways to read it all.</p>
+      <p class="lb-hint">{isVideo(p.media) ? "Swipe sideways or pinch. Or go full screen." : "Swipe sideways or pinch to zoom."}</p>
     </dialog>
   </div>
 ) : (
@@ -63,5 +64,12 @@ const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
     // A click on the backdrop (the dialog itself, outside its content) closes it.
     dialog.addEventListener("click", (e) => { if (e.target === dialog) dialog.close(); });
     dialog.addEventListener("close", () => big?.pause());
+    // No native controls on the enlarged video: on a phone they take the swipe
+    // and the pinch. Full screen is its own button (iPhone only has the video one).
+    box.querySelector(".lb-full")?.addEventListener("click", () => {
+      const v = big as HTMLVideoElement & { webkitEnterFullscreen?: () => void };
+      if (v.requestFullscreen) v.requestFullscreen().catch(() => v.webkitEnterFullscreen?.());
+      else v.webkitEnterFullscreen?.();
+    });
   }
 </script>
