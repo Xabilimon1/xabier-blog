@@ -14,6 +14,16 @@ export type Project = {
 // Real projects, honest status, client/institution names anonymized by descriptor.
 export const projects: Project[] = [
   {
+    slug: "hubble",
+    name: "Hubble",
+    status: "open",
+    blurb:
+      "Decompiler for MultiBase Cosmos. Turns compiled .omd modules back into COOL source that recompiles to the same bytes; the format had no public documentation, so it was worked out from the binaries.",
+    parts: ["python", "imhex"],
+    links: [{ label: "GitHub", href: "https://github.com/Xabilimon1/hubble-cosmos" }],
+    media: "/projects/hubble.mp4",
+  },
+  {
     slug: "sam",
     name: "SAM",
     status: "closed",
@@ -23,16 +33,6 @@ export const projects: Project[] = [
     brokeAt: "Instructions were dropped silently on the way to the model; everything still looked fine.",
     links: [{ label: "Read the writeup", href: "/posts/2026-08-03-sam-the-harness-is-the-hard-part" }],
     media: "/projects/sam.mp4",
-  },
-  {
-    slug: "hubble",
-    name: "Hubble",
-    status: "open",
-    blurb:
-      "Decompiler for MultiBase Cosmos. Turns compiled .omd modules back into COOL source that recompiles to the same bytes; the format had no public documentation, so it was worked out from the binaries.",
-    parts: ["python", "imhex"],
-    links: [{ label: "GitHub", href: "https://github.com/Xabilimon1/hubble-cosmos" }],
-    media: "/projects/hubble.mp4",
   },
   {
     slug: "lince-reservations",
