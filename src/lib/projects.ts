@@ -24,6 +24,20 @@ export const projects: Project[] = [
     media: "/projects/hubble.mp4",
   },
   {
+    slug: "leeuwenhoek",
+    name: "Leeuwenhoek",
+    status: "open",
+    blurb:
+      "Mechanistic explanations of ARC's tiny AlgZoo networks. First specimen: the 32-parameter RNN that finds the median, explained down to an exact accuracy from its weights and a twin that matches it input by input.",
+    parts: ["python", "numpy", "matplotlib"],
+    brokeAt: "Near a tie the comparison channel falls below the memory channel, the neuron pair breaks and x1 wins by default: 77% of the wrong answers.",
+    links: [
+      { label: "Read the writeup", href: "/posts/2026-11-08-taking-apart-a-32-number-network" },
+      { label: "GitHub", href: "https://github.com/Xabilimon1/leeuwenhoek" },
+    ],
+    media: "/projects/leeuwenhoek.png",
+  },
+  {
     slug: "sam",
     name: "SAM",
     status: "closed",
