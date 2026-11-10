@@ -17,8 +17,6 @@ keywords:
   - "argmedian"
 ---
 
-*Also published on [LessWrong](https://www.lesswrong.com/posts/zips8rffWCEALosFD/taking-apart-a-32-number-network).*
-
 ## 1. The Leeuwenhoek Context.
 I’ve decided to name the project after Leeuwenhoek, a pioneer of microscopy who identified thousands of tiny creatures—“animalcules”—in a single drop of water. Our “animalcules” are neural networks.
 
