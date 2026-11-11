@@ -17,6 +17,8 @@ keywords:
   - "argmedian"
 ---
 
+*Also published on the [EA Forum](https://forum.effectivealtruism.org/posts/boaXwxTaB2pYuyGmj/taking-apart-a-32-number-network-1).*
+
 ## 1. The Leeuwenhoek Context.
 I’ve decided to name the project after Leeuwenhoek, a pioneer of microscopy who identified thousands of tiny creatures—“animalcules”—in a single drop of water. Our “animalcules” are neural networks.
 

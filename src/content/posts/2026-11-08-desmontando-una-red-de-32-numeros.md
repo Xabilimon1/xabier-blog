@@ -17,6 +17,8 @@ keywords:
   - "argmedian"
 ---
 
+*También publicado en el [EA Forum](https://forum.effectivealtruism.org/posts/boaXwxTaB2pYuyGmj/taking-apart-a-32-number-network-1).*
+
 ## 1. Contexto de Leeuwenhoek.
 He decidido llamar al proyecto Leeuwenhoek, un pionero de la microscopia que identifico en una sola gota de agua miles de seres diminutos, "animaculos". Nuestros animaculos son redes neuronales. 
 
