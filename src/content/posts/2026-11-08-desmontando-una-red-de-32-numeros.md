@@ -97,7 +97,7 @@ El gemelo de antes se apoyaba en los pesos de la red, entonces teniamos que hace
 
 
 De lo que llevamos ahora me sorprende lo compleja que puede ser una red de tan pocos parametros y ni me imagino meterme dentro de las que tienen miles de millones, como con tan solo 32 la red es capaz de separar comparacion y memoria y que la explicacion sea capaz de preedecir sus propios pesos. Las 150 zonas hasta lograr el 100% no  son realmente algo de lo que se pueda sacar nada o entender, son meros calculos que no vale la pena pararse a entender. 
-Con todo esto sabemos que el error de la red fabricada sigue una ley exacta  con una memoria mas pequeña aun la red acertaria el 99,999% de las veces, y el porque el entrenamiento se quedo con una memoria 10 veces mayor sigue sin darnos una respuesta clara.
+Con todo esto sabemos que el error de la red fabricada sigue una ley exacta  con una memoria mas pequeña aun la red acertaria el 99,999% de las veces, y el porque el entrenamiento se quedo con una memoria mucho mayor sigue sin darnos una respuesta clara.
 En el proximo post veremos esa ley del error, un recap de todo el proceso y mas hallazgos que sorprenden.
 
 Claude Code escribio el codigo y un resumen de los resultados del que parti, el texto es mio y traducido con DeepL.

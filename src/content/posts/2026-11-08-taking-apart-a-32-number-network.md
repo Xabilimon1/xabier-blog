@@ -101,7 +101,7 @@ The previous twin relied on the network’s weights, so we had to build a networ
 
 
 Based on what we've seen so far, I'm surprised at how complex a network with so few parameters can be, and I can't even imagine delving into those with billions of them—especially since, with just 32, the network is capable of separating comparison from memory, and the explanation is able to predict its weights. The 150 zones required to reach 100% aren’t really something from which you can draw any conclusions or gain insight; they’re mere calculations that aren’t worth pausing to understand.
-With all this, we know that the error of the built network follows an exact law—with a smaller memory, the network would be correct 99.999% of the time—and why the training ended up with a memory 10 times larger is still unclear.
+With all this, we know that the error of the built network follows an exact law—with a smaller memory, the network would be correct 99.999% of the time—and why the training ended up with a much larger memory is still unclear.
 In the next post, we’ll look at that error law, a recap of the entire process, and more surprising findings.
 
 Claude Code wrote the code and a summary of the results I started with; the text is mine and was translated using DeepL.
